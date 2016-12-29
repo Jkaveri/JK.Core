@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>JKCore</id>
+    <version>1.0.0</version>
+    <authors>Ho Nguyen</authors>
+    <owners>Ho Nguyen</owners>
+    <licenseUrl>https://raw.githubusercontent.com/Jkaveri/JKCore/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Jkaveri/JKCore</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>My JKCore</description>
+    <releaseNotes>Born</releaseNotes>
+    <copyright>Copyright 2016 Ho Nguyen(JKaveri)</copyright>
+    <tags>JKCore</tags>
+    <dependencies>
+      <dependency id="NETStandard.Library" version="1.6.1" />
+      <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
+      <dependency id="System.Linq" version="4.3.0" />
+      <dependency id="System.ComponentModel.Annotations" version="4.3.0" />
+    </dependencies>
+  </metadata>
+</package>
