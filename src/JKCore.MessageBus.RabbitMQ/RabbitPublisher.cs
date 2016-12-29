@@ -15,9 +15,7 @@ namespace JKCore.MessageBus.RabbitMQ
     /// <summary>
     /// </summary>
     public class RabbitPublisher : IPublisher, IDisposable
-    {
-        private ConnectionFactory _connectionFactory;
-
+    {    
         private RabbitModelContext _modelContext;
 
         private SendSettings _sendSettings;
