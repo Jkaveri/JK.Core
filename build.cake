@@ -1,5 +1,7 @@
 var target          = Argument("target", "Default");
 var configuration   = Argument<string>("configuration", "Release");
+var ciMode          = Argument<bool>("ciMode", false);
+var buildNumber     = Argument<string>("buildNumber", "");
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -9,6 +11,11 @@ var packPath            = Directory("./src/JKCore");
 var sourcePath          = Directory("./src");
 var testsPath           = Directory("test");
 var buildArtifacts      = Directory("./artifacts/packages");
+
+ Information("CI MODE");
+ Information(ciMode.ToString());
+ Information("Build Number");
+ Information(buildNumber);
 
 Task("Build")
     .IsDependentOn("Clean")
@@ -71,7 +78,10 @@ Task("Pack")
         if(!isLocalBuild)
         {
             settings.VersionSuffix = "build" + AppVeyor.Environment.Build.Number.ToString().PadLeft(5,'0');
+        } else if (ciMode) {
+            settings.VersionSuffix = buildNumber;
         }
+
         DotNetCorePack(project.GetDirectory().FullPath, settings);
     }   
 });
