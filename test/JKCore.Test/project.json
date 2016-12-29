@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "buildOptions": {
         "emitEntryPoint": true
     },
@@ -7,12 +7,12 @@
     "dependencies": {
         "dotnet-test-xunit": "2.2.0-preview2-build1029",
         "FluentAssertions": "4.16.0",
-        "JKCore": "1.0.0",
+        "JKCore": { "target": "project" },
         "Moq": "4.6.38-alpha",
         "System.ComponentModel.Annotations": "4.3.0",
         "xunit": "2.2.0-beta3-build3402",
-        "JKCore.Mediator": "1.0.0",
-        "JKCore.MessageBus": "1.0.0",
+        "JKCore.Mediator": { "target": "project" },
+        "JKCore.MessageBus": { "target": "project" },
         "Microsoft.Extensions.DependencyInjection": "1.1.0",
         "GenFu": "1.2.1"
     },
