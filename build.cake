@@ -1,7 +1,5 @@
 var target          = Argument("target", "Default");
 var configuration   = Argument<string>("configuration", "Release");
-var nugetSource     = Argument<string>("nugetSource");
-var nugetApiKey     = Argument<string>("nugetApiKey");
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -11,10 +9,6 @@ var packPath            = Directory("./src/JKCore");
 var sourcePath          = Directory("./src");
 var testsPath           = Directory("test");
 var buildArtifacts      = Directory("./artifacts/packages");
-
-
-Information(nugetSource);
-Information(nugetApiKey);
 
 Task("Build")
     .IsDependentOn("Clean")
