@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-namespace JK.Core.Mediator
+namespace JKCore.Mediator
 {
     #region
 
@@ -11,10 +11,9 @@ namespace JK.Core.Mediator
     using System.Linq;
     using System.Threading.Tasks;
 
-    using JK.Core.Mediator.Commands;
-    using JK.Core.Mediator.Events;
-
     using JKCore.Exceptions;
+    using JKCore.Mediator.Commands;
+    using JKCore.Mediator.Events;
 
     using Microsoft.Extensions.DependencyInjection;
 

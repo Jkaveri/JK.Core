@@ -4,8 +4,8 @@
 
     using FluentAssertions;
 
-    using JK.Core.Mediator;
-    using JK.Core.Mediator.Commands;
+    using JKCore.Mediator;
+    using JKCore.Mediator.Commands;
 
     using Moq;
 
