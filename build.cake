@@ -6,11 +6,13 @@ var buildNumber     = Argument<string>("buildNumber", "");
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
 ///////////////////////////////////////////////////////////////////////////////
-var isLocalBuild        = !AppVeyor.IsRunningOnAppVeyor;
-var packPath            = Directory("./src/JKCore");
-var sourcePath          = Directory("./src");
-var testsPath           = Directory("test");
 var buildArtifacts      = Directory("./artifacts/packages");
+var sourceRoot          = "./src";
+var testsRoot           = "./test";
+var sourceProjects      = sourceRoot + "/**/project.json";
+var testProjects        = testsRoot + "/**/project.json";
+var nugetConfigFile     = new FilePath("NuGet.config");
+
 
  Information("CI MODE");
  Information(ciMode.ToString());
@@ -22,7 +24,7 @@ Task("Build")
     .IsDependentOn("Restore")
     .Does(() =>
 {
-	var projects = GetFiles("./**/project.json");
+	var projects = GetFiles(sourceProjects);
 
 	foreach(var project in projects)
 	{
@@ -40,7 +42,7 @@ Task("RunTests")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    var projects = GetFiles("./test/**/project.json");
+    var projects = GetFiles(testProjects);
 
     foreach(var project in projects)
 	{
@@ -64,7 +66,7 @@ Task("Pack")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    var projects = GetFiles("./src/**/project.json");
+    var projects = GetFiles(sourceProjects);
 
     Information("ALL PROJECTS");
     foreach (var project in projects) {
@@ -75,11 +77,8 @@ Task("Pack")
         };
 
         // add build suffix for CI builds
-        if(!isLocalBuild)
-        {
-            settings.VersionSuffix = "build" + AppVeyor.Environment.Build.Number.ToString().PadLeft(5,'0');
-        } else if (ciMode) {
-            settings.VersionSuffix = buildNumber;
+        if (ciMode) {
+           settings.VersionSuffix = buildNumber;
         }
 
         DotNetCorePack(project.GetDirectory().FullPath, settings);
@@ -95,13 +94,21 @@ Task("Clean")
 Task("Restore")
     .Does(() =>
 {
-    var settings = new DotNetCoreRestoreSettings
-    {
-        Sources = new [] { "https://api.nuget.org/v3/index.json" }
-    };
+    DotNetCoreRestoreSettings settings = new DotNetCoreRestoreSettings();
 
-    DotNetCoreRestore(sourcePath, settings);
-    DotNetCoreRestore(testsPath, settings);
+    if (FileExists(nugetConfigFile)) 
+    {
+        settings.ConfigFile = nugetConfigFile;
+    } else {
+        settings.Sources = new [] { 
+            "https://api.nuget.org/v3/index.json",
+            "https://www.myget.org/F/aspnet-contrib/api/v3/index.json",
+            "https://dotnet.myget.org/F/aspnetcore-ci-dev/api/v3/index.json" 
+        };
+    };    
+
+    DotNetCoreRestore(sourceRoot, settings);
+    DotNetCoreRestore(testsRoot, settings);
 });
 
 Task("Default")

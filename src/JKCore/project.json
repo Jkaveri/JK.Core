@@ -2,7 +2,7 @@
     "title": "JK.Core",
     "copyright": "Copyright (c) Henry. All right reversed",
     "language": "en",
-    "version": "1.0.1-*",
+    "version": "1.0.0-*",
     "dependencies": {
         "System.Reflection.TypeExtensions": "4.3.0",
         "System.Linq": "4.3.0",
