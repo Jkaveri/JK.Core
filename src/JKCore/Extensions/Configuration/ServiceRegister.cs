@@ -35,6 +35,23 @@
 
         /// <summary>
         /// </summary>
+        /// <param name="serviceLifetime">
+        /// The service lifetime.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public ServiceRegister ByAbstractClasses(ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
+        {
+            foreach (var type in this._types)
+            {
+                this.RegisterByBaseType(type, serviceLifetime);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// </summary>
         public ServiceRegister ByImplementedInterfaces(ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
         {
             var types = this._types.Where(t => t.GetTypeInfo().ImplementedInterfaces.Any());
@@ -64,32 +81,6 @@
             return this;
         }
 
-        public ServiceRegister ByAbstractClasses(ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
-        {
-            foreach (var type in this._types)
-            {
-                RegisterByBaseType(type, serviceLifetime);
-            }
-
-            return this;
-        }
-
-        private void RegisterByBaseType(Type type, ServiceLifetime serviceLifeTime = ServiceLifetime.Transient)
-        {
-
-            if (!IsImplementationClass(type))
-            {
-                return;
-            }
-          
-            var info = type.GetTypeInfo();
-            while (info.BaseType != null)
-            {          
-                _services.Add(new ServiceDescriptor(info.BaseType, type, serviceLifeTime));
-                info = info.BaseType.GetTypeInfo();
-            }
-        }
-
         private IEnumerable<Type> CollectImplementationClasses(IEnumerable<Type> types)
         {
             return types.Where(this.IsImplementationClass);
@@ -99,6 +90,21 @@
         {
             var info = type.GetTypeInfo();
             return info.IsClass && !info.IsAbstract;
+        }
+
+        private void RegisterByBaseType(Type type, ServiceLifetime serviceLifeTime = ServiceLifetime.Transient)
+        {
+            if (!this.IsImplementationClass(type))
+            {
+                return;
+            }
+
+            var info = type.GetTypeInfo();
+            while (info.BaseType != null)
+            {
+                this._services.Add(new ServiceDescriptor(info.BaseType, type, serviceLifeTime));
+                info = info.BaseType.GetTypeInfo();
+            }
         }
     }
 }

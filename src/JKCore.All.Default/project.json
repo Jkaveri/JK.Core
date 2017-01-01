@@ -5,7 +5,7 @@
         "JKCore": "1.0.0-*",
         "JKCore.Mediator": "1.0.0-*",
         "JKCore.Repositories.EntityFramework": "1.0.0-*",
-        "Microsoft.Extensions.DependencyInjection": "1.2.0-preview1-22868",
+        "Microsoft.Extensions.DependencyInjection": "1.1.0"
     },
 
     "frameworks": {

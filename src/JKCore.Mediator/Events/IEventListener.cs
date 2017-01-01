@@ -13,10 +13,14 @@ namespace JKCore.Mediator.Events
         /// <summary>
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         void Handle(TMessage message);
     }
 
-    public interface IEventListener { }
+    /// <summary>
+    /// </summary>
+    public interface IEventListener
+    {
+    }
 }

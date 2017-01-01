@@ -81,8 +81,23 @@ namespace JKCore.Utilities
 
         /// <summary>
         /// </summary>
+        /// <param name="childType">
+        /// The child type.
+        /// </param>
+        /// <param name="parentType">
+        /// The parent type.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static bool IsAssignAbleTo(Type childType, Type parentType)
+        {
+            return parentType.IsAssignableFrom(childType);
+        }
+
+        /// <summary>
+        /// </summary>
         /// <param name="type">
-        /// The type.
+        ///     The type.
         /// </param>
         /// <returns>
         /// </returns>
@@ -95,7 +110,7 @@ namespace JKCore.Utilities
         /// <summary>
         /// </summary>
         /// <param name="type">
-        /// The type.
+        ///     The type.
         /// </param>
         /// <returns>
         /// </returns>
@@ -125,11 +140,6 @@ namespace JKCore.Utilities
             return
                 properties.Select(
                     t => new KeyValuePair<string, string>(t.Name, t.GetGetMethod().Invoke(data, null)?.ToString()));
-        }
-
-        public static bool IsAssignAbleTo(Type childType, Type parentType)
-        {
-            return parentType.IsAssignableFrom(childType);
         }
     }
 }
