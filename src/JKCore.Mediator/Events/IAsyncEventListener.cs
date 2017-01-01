@@ -13,22 +13,16 @@ namespace JKCore.Mediator.Events
     /// </summary>
     /// <typeparam name="TMessage">
     /// </typeparam>
-    public interface IAsyncEventListener<TMessage> : IAsyncEventListener
+    public interface IAsyncEventListener<TMessage> : IEventListener
         where TMessage : IAsyncEvent
     {
         /// <summary>
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         /// <returns>
         /// </returns>
         Task Handle(TMessage message);
-    }
-
-    /// <summary>
-    /// </summary>
-    public interface IAsyncEventListener
-    {
     }
 }

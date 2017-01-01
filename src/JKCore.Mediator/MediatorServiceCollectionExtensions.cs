@@ -5,6 +5,10 @@ namespace JKCore.Mediator
 {
     #region
 
+    using JKCore.Extensions;
+    using JKCore.Mediator.Commands;
+    using JKCore.Mediator.Events;
+
     using Microsoft.Extensions.DependencyInjection;
 
     #endregion
@@ -16,7 +20,7 @@ namespace JKCore.Mediator
         /// <summary>
         /// </summary>
         /// <param name="services">
-        /// The services.
+        ///     The services.
         /// </param>
         /// <returns>
         /// </returns>
@@ -25,6 +29,23 @@ namespace JKCore.Mediator
             services.AddTransient<IMediator, Mediator>();
             services.AddTransient<ICommandHandlerResolver, MediatorRegister>();
             services.AddTransient<IEventListenerResolver, MediatorRegister>();
+            return services;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="services">
+        /// The services.
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IServiceCollection AddMediatorTypesInAssemblyOf<T>(this IServiceCollection services)
+        {
+            services.Scan<T>(
+                    collector => { collector.ImplementationOf(new[] { typeof(ICommandHandler), typeof(IEventListener) }); })
+                .ByImplementedInterfaces();
             return services;
         }
     }

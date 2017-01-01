@@ -18,6 +18,36 @@ namespace JKCore.Utilities
     public static class ReflectionUtils
     {
         /// <summary>
+        ///     Scan assembly of <see cref="Type" />
+        /// </summary>
+        /// <param name="type">
+        ///     The type.
+        /// </param>
+        /// <returns>
+        ///     Collection of type in assembly
+        /// </returns>
+        public static IEnumerable<Type> AllTypesInAssemblyOf(Type type)
+        {
+            var types = type.GetTypeInfo().Assembly.GetTypes();
+
+            foreach (var t in types)
+            {
+                yield return t;
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IEnumerable<Type> AllTypesInAssemblyOf<T>()
+        {
+            return AllTypesInAssemblyOf(typeof(T));
+        }
+
+        /// <summary>
         ///     Copy a object to another <typeparamref name="T" />
         /// </summary>
         /// <typeparam name="T">A target type want to copy</typeparam>
@@ -51,6 +81,32 @@ namespace JKCore.Utilities
 
         /// <summary>
         /// </summary>
+        /// <param name="type">
+        /// The type.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static bool IsClass(Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+            return typeInfo.IsClass;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="type">
+        /// The type.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static bool IsStaticClass(Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+            return typeInfo.IsSealed && typeInfo.IsAbstract;
+        }
+
+        /// <summary>
+        /// </summary>
         /// <param name="data">
         ///     The data.
         /// </param>
@@ -69,6 +125,11 @@ namespace JKCore.Utilities
             return
                 properties.Select(
                     t => new KeyValuePair<string, string>(t.Name, t.GetGetMethod().Invoke(data, null)?.ToString()));
+        }
+
+        public static bool IsAssignAbleTo(Type childType, Type parentType)
+        {
+            return parentType.IsAssignableFrom(childType);
         }
     }
 }

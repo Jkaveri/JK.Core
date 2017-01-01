@@ -7,7 +7,7 @@ namespace JKCore.Mediator.Events
     /// </summary>
     /// <typeparam name="TMessage">
     /// </typeparam>
-    public interface IEventListener<TMessage>
+    public interface IEventListener<TMessage> : IEventListener
         where TMessage : IEvent
     {
         /// <summary>
@@ -17,4 +17,6 @@ namespace JKCore.Mediator.Events
         /// </param>
         void Handle(TMessage message);
     }
+
+    public interface IEventListener { }
 }
