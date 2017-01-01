@@ -30,19 +30,19 @@ namespace JKCore.Mediator
         Task PublishAsync<TMessage>(TMessage message) where TMessage : IAsyncEvent;
 
         /// <summary>
+        /// Sends the command.
         /// </summary>
-        /// <typeparam name="TCommand"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="command"></param>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="command">The command.</param>
         /// <returns></returns>
-        TResult Send<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult>;
+        TResult Send<TResult>(ICommand<TResult> command);
 
         /// <summary>
+        /// Sends command asynchronous.
         /// </summary>
-        /// <typeparam name="TCommand"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="command"></param>
-        /// <returns></returns>
-        Task<TResult> SendAsync<TCommand, TResult>(TCommand command) where TCommand : IAsyncCommand<TResult>;
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="command">The command.</param>
+        /// <returns><typeparamref name="TResult"/></returns>
+        Task<TResult> SendAsync<TResult>(IAsyncCommand<TResult> command);
     }
 }

@@ -95,7 +95,7 @@ namespace JKCore.Mediator
             var @continue = await this.Execute(this._beforeSend, command);
             if (@continue)
             {
-                var result = await this._mediator.SendAsync<TCommand, TResult>(command);
+                var result = await this._mediator.SendAsync(command);
 
                 if (this._afterSend != null)
                 {

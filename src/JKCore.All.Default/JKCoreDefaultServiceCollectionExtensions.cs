@@ -24,20 +24,12 @@
         /// <param name="services">
         ///     The services.
         /// </param>
-        public static void AddJKCore(this ServiceCollection services)
+        public static void AddJKCore(this IServiceCollection services)
         {
             services.AddTransient<AnnotationsValidator>();
 
             // Add mediator
             services.AddMediator();
-            // services.Scan<AnnotationsValidator>(
-            //    collector =>
-            //        {
-            //            collector.Ignore<ServiceRegister>();
-            //            collector.Ignore<ValidationResult>();
-            //            collector.Ignore<TypeCollector>();
-            //            collector.Ignore<ErrorItem>();
-            //        }).ByItSelf();
         }
     }
 }

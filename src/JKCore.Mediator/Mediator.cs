@@ -8,6 +8,7 @@ namespace JKCore.Mediator
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
 
     using JKCore.Mediator.Commands;
@@ -24,13 +25,13 @@ namespace JKCore.Mediator
         private readonly IEventListenerResolver _listenerResolver;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mediator"/> class.
+        ///     Initializes a new instance of the <see cref="Mediator" /> class.
         /// </summary>
         /// <param name="handlerResolver">
-        /// The handler resolver.
+        ///     The handler resolver.
         /// </param>
         /// <param name="listenerResolver">
-        /// The listener resolver.
+        ///     The listener resolver.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -81,27 +82,24 @@ namespace JKCore.Mediator
         /// <summary>
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         /// <typeparam name="TMessage">
         /// </typeparam>
         public void Publish<TMessage>(TMessage message) where TMessage : IEvent
         {
-            var receivers = this._listenerResolver.ResolveListeners<TMessage>();
+            var receivers = this._listenerResolver.ResolveListeners<TMessage>().ToList();
 
-            if (receivers.Any())
+            foreach (var receiver in receivers)
             {
-                foreach (var receiver in receivers)
-                {
-                    receiver.Handle(message);
-                }
+                receiver.Handle(message);
             }
         }
 
         /// <summary>
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         /// <typeparam name="TMessage">
         /// </typeparam>
@@ -122,22 +120,27 @@ namespace JKCore.Mediator
         /// <summary>
         /// </summary>
         /// <param name="command">
-        /// The command.
+        ///     The command.
         /// </param>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
         /// <typeparam name="TResult">
         /// </typeparam>
         /// <returns>
         /// </returns>
         /// <exception cref="InvalidOperationException">
         /// </exception>
-        public TResult Send<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult>
+        public TResult Send<TResult>(ICommand<TResult> command)
         {
-            var handler = this._handlerResolver.ResolveHandler<TCommand, TResult>();
+            var commandType = command.GetType();
+            var method = this._handlerResolver.GetType()
+                .GetMethod("ResolveHandler")
+                .MakeGenericMethod(commandType, typeof(TResult));
+
+            var handler = method.Invoke(this._handlerResolver, null);
+
             if (handler != null)
             {
-                return handler.Handle(command);
+                method = handler.GetType().GetMethod("Handle");
+                return (TResult)method.Invoke(handler, new object[] { command });
             }
 
             throw new InvalidOperationException("Handler not found");
@@ -146,22 +149,27 @@ namespace JKCore.Mediator
         /// <summary>
         /// </summary>
         /// <param name="command">
-        /// The command.
+        ///     The command.
         /// </param>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
         /// <typeparam name="TResult">
         /// </typeparam>
         /// <returns>
         /// </returns>
         /// <exception cref="InvalidOperationException">
         /// </exception>
-        public Task<TResult> SendAsync<TCommand, TResult>(TCommand command) where TCommand : IAsyncCommand<TResult>
+        public Task<TResult> SendAsync<TResult>(IAsyncCommand<TResult> command)
         {
-            var handler = this._handlerResolver.ResolveAsyncHandler<TCommand, TResult>();
+            var commandType = command.GetType();
+            var method = this._handlerResolver.GetType()
+                .GetMethod("ResolveAsyncHandler")
+                .MakeGenericMethod(commandType, typeof(TResult));
+
+            var handler = method.Invoke(this._handlerResolver, null);
+
             if (handler != null)
             {
-                return handler.Handle(command);
+                method = handler.GetType().GetMethod("Handle");
+                return (Task<TResult>)method.Invoke(handler, new object[] { command });
             }
 
             throw new InvalidOperationException("Handler not found");

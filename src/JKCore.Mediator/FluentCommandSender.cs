@@ -79,7 +79,7 @@ namespace JKCore.Mediator
 
             if (@continue)
             {
-                var result = this._mediator.Send<TCommand, TResult>(command);
+                var result = this._mediator.Send(command);
 
                 if (this._afterSend != null)
                 {
