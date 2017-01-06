@@ -29,13 +29,15 @@
         public async Task send_command_should_successful()
         {
             // Arrange
-            var command = new ExpectedResultAsyncCommand() { ExpectedResult = "Henry" };
+            var command = new ExpectedResultAsyncCommand { ExpectedResult = "Henry" };
 
             // Actions
             var result = await this._mediator.SendAsync(command);
 
             // Assertions
-            result.Should().Be(command.ExpectedResult);
+            result.Succeed.Should().BeTrue();
+            result.Result.Should().Be(command.ExpectedResult);
+            result.Errors.Should().BeEmpty();
         }
     }
 }

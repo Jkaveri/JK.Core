@@ -11,7 +11,7 @@
         private readonly IServiceProvider _serviceProvider;
 
         public MediatorFixture()
-        {
+        { 
             this._services = new ServiceCollection();
             this._services.AddMediator().AddMediatorTypesInAssemblyOf<Program>();
             this._serviceProvider = this._services.BuildServiceProvider();

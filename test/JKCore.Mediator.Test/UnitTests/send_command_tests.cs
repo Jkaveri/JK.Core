@@ -36,7 +36,9 @@ namespace JKCore.Mediator.Test.UnitTests
             var result = this._mediator.Send(command);
 
             // Assertions
-            result.Should().Be(command.ExpectedResult);
+            result.Succeed.Should().BeTrue();
+            result.Result.Should().Be(command.ExpectedResult);
+            result.Errors.Should().BeEmpty();
         }
     }
 }

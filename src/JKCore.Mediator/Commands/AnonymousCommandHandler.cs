@@ -15,20 +15,20 @@ namespace JKCore.Mediator.Commands
     /// </typeparam>
     /// <typeparam name="TResult">
     /// </typeparam>
-    public class AnonymousCommandHandler<TCommand, TResult> : ICommandHandler<TCommand, TResult>
+    public class AnonymousCommandHandler<TCommand, TResult> : CommandHandler<TCommand, TResult>
         where TCommand : ICommand<TResult>
     {
-        private Func<TCommand, TResult> _handler;
+        private Func<TCommand, ICommandResult<TResult>> _handler;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnonymousCommandHandler{TCommand,TResult}"/> class.
+        ///     Initializes a new instance of the <see cref="AnonymousCommandHandler{TCommand,TResult}" /> class.
         /// </summary>
         /// <param name="handler">
-        /// The handler.
+        ///     The handler.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public AnonymousCommandHandler(Func<TCommand, TResult> handler)
+        public AnonymousCommandHandler(Func<TCommand, ICommandResult<TResult>> handler)
         {
             if (handler == null)
             {
@@ -41,11 +41,11 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         /// </summary>
         /// <param name="command">
-        /// The command.
+        ///     The command.
         /// </param>
         /// <returns>
         /// </returns>
-        public TResult Handle(TCommand command)
+        public override ICommandResult<TResult> Handle(TCommand command)
         {
             return this._handler(command);
         }

@@ -103,7 +103,7 @@ namespace JKCore.Mediator
             object handlerWrapper;
             if (AnoHandlers.TryGetValue(cmdType, out handlerWrapper))
             {
-                var handlerFn = handlerWrapper as Func<TCommand, Task<TResult>>;
+                var handlerFn = handlerWrapper as Func<TCommand, Task<ICommandResult<TResult>>>;
                 if (handlerFn != null)
                 {
                     return new AnonymousAsyncCommandHandler<TCommand, TResult>(handlerFn);
@@ -172,7 +172,7 @@ namespace JKCore.Mediator
             object handlerWrapper;
             if (AnoHandlers.TryGetValue(cmdType, out handlerWrapper))
             {
-                var handlerFn = handlerWrapper as Func<TCommand, TResult>;
+                var handlerFn = handlerWrapper as Func<TCommand, ICommandResult<TResult>>;
                 if (handlerFn != null)
                 {
                     return new AnonymousCommandHandler<TCommand, TResult>(handlerFn);

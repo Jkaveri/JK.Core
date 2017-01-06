@@ -1,20 +1,21 @@
 ﻿namespace JKCore.Mediator.Test.CommandHandlers
 {
+    using System;
     using JKCore.Mediator.Commands;
     using JKCore.Mediator.Test.Commands;
 
-    public class ExpectedResultCommandHandler : ICommandHandler<ExpectedResultCommand, object>
+    public class ExpectedResultCommandHandler : CommandHandler<ExpectedResultCommand, object>
     {
         /// <summary>
         /// </summary>
         /// <param name="command">
-        /// The command.
+        ///     The command.
         /// </param>
         /// <returns>
         /// </returns>
-        public object Handle(ExpectedResultCommand command)
+        public override ICommandResult<object> Handle(ExpectedResultCommand command)
         {
-            return command.ExpectedResult;
+            return this.Success(command.ExpectedResult);
         }
     }
 }

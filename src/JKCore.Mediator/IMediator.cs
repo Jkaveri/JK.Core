@@ -35,7 +35,7 @@ namespace JKCore.Mediator
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="command">The command.</param>
         /// <returns></returns>
-        TResult Send<TResult>(ICommand<TResult> command);
+        ICommandResult<TResult> Send<TResult>(ICommand<TResult> command);
 
         /// <summary>
         /// Sends command asynchronous.
@@ -43,6 +43,6 @@ namespace JKCore.Mediator
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="command">The command.</param>
         /// <returns><typeparamref name="TResult"/></returns>
-        Task<TResult> SendAsync<TResult>(IAsyncCommand<TResult> command);
+        Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command);
     }
 }

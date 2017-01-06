@@ -25,6 +25,6 @@ namespace JKCore.Mediator.Commands
         /// </param>
         /// <returns>
         /// </returns>
-        Task<TResult> Handle(TCommand command);
+        Task<ICommandResult<TResult>> Handle(TCommand command);
     }
 }

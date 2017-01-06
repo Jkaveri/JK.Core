@@ -53,34 +53,6 @@ namespace JKCore.Mediator
 
         /// <summary>
         /// </summary>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        public FluentAsyncCommandSender<TCommand, TResult> PrepareAsyncCommandSender<TCommand, TResult>()
-            where TCommand : IAsyncCommand<TResult>
-        {
-            return new FluentAsyncCommandSender<TCommand, TResult>(this);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        public FluentCommandSender<TCommand, TResult> PrepareCommandSender<TCommand, TResult>()
-            where TCommand : ICommand<TResult>
-        {
-            return new FluentCommandSender<TCommand, TResult>(this);
-        }
-
-        /// <summary>
-        /// </summary>
         /// <param name="message">
         ///     The message.
         /// </param>
@@ -128,7 +100,7 @@ namespace JKCore.Mediator
         /// </returns>
         /// <exception cref="InvalidOperationException">
         /// </exception>
-        public TResult Send<TResult>(ICommand<TResult> command)
+        public ICommandResult<TResult> Send<TResult>(ICommand<TResult> command)
         {
             var commandType = command.GetType();
             var method = this._handlerResolver.GetType()
@@ -140,7 +112,7 @@ namespace JKCore.Mediator
             if (handler != null)
             {
                 method = handler.GetType().GetMethod("Handle");
-                return (TResult)method.Invoke(handler, new object[] { command });
+                return (ICommandResult<TResult>)method.Invoke(handler, new object[] { command });
             }
 
             throw new InvalidOperationException("Handler not found");
@@ -157,7 +129,7 @@ namespace JKCore.Mediator
         /// </returns>
         /// <exception cref="InvalidOperationException">
         /// </exception>
-        public Task<TResult> SendAsync<TResult>(IAsyncCommand<TResult> command)
+        public Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command)
         {
             var commandType = command.GetType();
             var method = this._handlerResolver.GetType()
@@ -169,7 +141,7 @@ namespace JKCore.Mediator
             if (handler != null)
             {
                 method = handler.GetType().GetMethod("Handle");
-                return (Task<TResult>)method.Invoke(handler, new object[] { command });
+                return (Task<ICommandResult<TResult>>)method.Invoke(handler, new object[] { command });
             }
 
             throw new InvalidOperationException("Handler not found");
