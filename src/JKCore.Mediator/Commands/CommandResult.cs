@@ -18,7 +18,7 @@
         /// <param name="succeed">
         /// The succeed.
         /// </param>
-        internal CommandResult(bool succeed)
+        public CommandResult(bool succeed)
             : this(succeed, default(TResult))
         {
         }
@@ -32,7 +32,7 @@
         /// <param name="result">
         ///     The result.
         /// </param>
-        internal CommandResult(bool succeed, TResult result)
+        public CommandResult(bool succeed, TResult result)
         {
             this.Succeed = succeed;
             this.Result = result;

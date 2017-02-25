@@ -10,7 +10,7 @@
     /// </summary>
     /// <typeparam name="TResult">
     /// </typeparam>
-    public class CommandResultFactory<TResult>
+    public abstract class CommandResultFactory<TResult>
     {
         /// <summary>
         /// </summary>

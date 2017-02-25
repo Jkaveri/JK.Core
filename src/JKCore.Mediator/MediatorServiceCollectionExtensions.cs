@@ -44,7 +44,12 @@ namespace JKCore.Mediator
         public static IServiceCollection AddMediatorTypesInAssemblyOf<T>(this IServiceCollection services)
         {
             services.Scan<T>(
-                    collector => { collector.ImplementationOf(new[] { typeof(ICommandHandler), typeof(IEventListener) }); })
+                    collector =>
+                        {
+                            // get all services that are implementation of theses types
+                            var types = new[] { typeof(ICommandHandler), typeof(IEventListener) };
+                            collector.ImplementationOf(types);
+                        })
                 .ByImplementedInterfaces();
             return services;
         }
