@@ -11,12 +11,12 @@ namespace JKCore.Mediator.Commands
 
     /// <summary>
     /// </summary>
-    public interface ICommandResult<TResult> : IErrorItemContainer
+    public interface ICommandResult<out TData> : IErrorItemContainer
     {
         /// <summary>
         /// Gets the result.
         /// </summary>
-        TResult Result { get; }
+        TData Data { get; }
 
         /// <summary>
         ///     Gets a value indicating whether succeed.
