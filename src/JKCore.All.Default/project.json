@@ -2,9 +2,9 @@
     "version": "1.0.1-*",
 
     "dependencies": {
-        "JKCore": "1.0.0-*",
-        "JKCore.Mediator": "1.0.0-*",
-        "JKCore.Repositories.EntityFramework": "1.0.0-*",
+        "JKCore": { "target": "project" },
+        "JKCore.Mediator": { "target": "project" },
+        "JKCore.Repositories.EntityFramework": { "target": "project" },
         "Microsoft.Extensions.DependencyInjection": "1.1.0"
     },
 
