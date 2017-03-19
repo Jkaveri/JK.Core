@@ -4,10 +4,15 @@
 namespace JKCore.Mediator.Commands
 {
     /// <summary>
+    /// Async command with return value
     /// </summary>
-    /// <typeparam name="TResult">
-    /// </typeparam>
+    /// <typeparam name="TResult">A return type</typeparam>
     public interface IAsyncCommand<TResult>
     {
     }
+
+    /// <summary>
+    /// Async command with no return value.
+    /// </summary>
+    public interface IAsyncCommand { }
 }

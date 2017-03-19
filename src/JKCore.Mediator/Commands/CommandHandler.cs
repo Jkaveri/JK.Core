@@ -19,4 +19,22 @@
         /// </returns>
         public abstract ICommandResult<TResult> Handle(TCommand command);
     }
+
+    /// <summary>
+    /// </summary>
+    /// <typeparam name="TCommand">
+    /// </typeparam>
+    public abstract class CommandHandler<TCommand> : CommandResultFactory,
+                                                              ICommandHandler<TCommand>
+        where TCommand : ICommand
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="command">
+        ///     The command.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public abstract ICommandResult Handle(TCommand command);
+    }
 }

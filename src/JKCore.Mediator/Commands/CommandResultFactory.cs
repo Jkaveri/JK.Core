@@ -87,4 +87,73 @@
             return new CommandResult<TResult>(true, result);
         }
     }
+
+
+    /// <summary>
+    /// </summary>
+    public abstract class CommandResultFactory
+    {
+        /// <summary>
+        /// </summary>
+        /// <returns>
+        /// </returns>
+        protected ICommandResult Failure()
+        {
+            return new CommandResult(false);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="message">
+        ///     The message.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        protected ICommandResult Failure(string message)
+        {
+            var result = this.Failure();
+            result.AddError(message);
+            return result;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="message">
+        ///     The message.
+        /// </param>
+        /// <param name="exception">
+        ///     The exception.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        protected ICommandResult Failure(string message, Exception exception)
+        {
+            var result = this.Failure();
+            result.AddError(message, exception);
+            return result;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="exception">
+        ///     The exception.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        protected ICommandResult Failure(Exception exception)
+        {
+            var result = this.Failure();
+            result.AddError(exception);
+            return result;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns>
+        /// </returns>
+        protected ICommandResult Success()
+        {
+            return new CommandResult(true);
+        }
+    }
 }

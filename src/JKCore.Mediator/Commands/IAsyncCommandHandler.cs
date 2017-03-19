@@ -19,12 +19,22 @@ namespace JKCore.Mediator.Commands
         where TCommand : IAsyncCommand<TResult>
     {
         /// <summary>
+        /// Handle async command.
         /// </summary>
-        /// <param name="command">
-        /// The command.
-        /// </param>
-        /// <returns>
-        /// </returns>
+        /// <returns><see cref="ICommandResult{TData}"/></returns>
         Task<ICommandResult<TResult>> Handle(TCommand command);
+    }
+
+    /// <summary>
+    /// Async command handle
+    /// </summary>
+    /// <typeparam name="TCommand">Async Command with no return type.</typeparam>
+    public interface IAsyncCommandHandler<TCommand> : ICommandHandler where TCommand : IAsyncCommand
+    {
+        /// <summary>
+        /// Handle async command.
+        /// </summary>
+        /// <returns><see cref="ICommandResult"/></returns>
+        Task<ICommandResult> Handle(TCommand command);
     }
 }

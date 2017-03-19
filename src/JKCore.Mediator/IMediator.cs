@@ -38,11 +38,25 @@ namespace JKCore.Mediator
         ICommandResult<TResult> Send<TResult>(ICommand<TResult> command);
 
         /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        ICommandResult Send(ICommand command);
+
+        /// <summary>
         /// Sends command asynchronous.
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="command">The command.</param>
         /// <returns><typeparamref name="TResult"/></returns>
         Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command);
+
+        /// <summary>
+        /// Sends command asynchronous.
+        /// </summary>
+        /// <param name="command">A command</param>
+        /// <returns><see cref="ICommandResult"/></returns>
+        Task<ICommandResult> SendAsync(IAsyncCommand command);
     }
 }

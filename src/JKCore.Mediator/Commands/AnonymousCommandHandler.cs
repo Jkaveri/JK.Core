@@ -50,4 +50,39 @@ namespace JKCore.Mediator.Commands
             return this._handler(command);
         }
     }
+
+    /// <summary>
+    /// </summary>
+    /// <typeparam name="TCommand">
+    /// </typeparam>
+    public class AnonymousCommandHandler<TCommand> : CommandHandler<TCommand>
+        where TCommand : ICommand
+    {
+        private Func<TCommand, ICommandResult> _handler;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AnonymousCommandHandler{TCommand}" /> class.
+        /// </summary>
+        /// <param name="handler">
+        ///     The handler.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
+        public AnonymousCommandHandler(Func<TCommand, ICommandResult> handler)
+        {
+            this._handler = handler ?? throw new ArgumentNullException(nameof(handler));
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="command">
+        ///     The command.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public override ICommandResult Handle(TCommand command)
+        {
+            return this._handler(command);
+        }
+    }
 }

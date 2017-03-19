@@ -24,6 +24,23 @@ namespace JKCore.Mediator.Commands
 
     /// <summary>
     /// </summary>
+    /// <typeparam name="TCommand">
+    /// </typeparam>
+    public interface ICommandHandler<TCommand> : ICommandHandler
+        where TCommand : ICommand
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="command">
+        /// The command.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        ICommandResult Handle(TCommand command);
+    }
+
+    /// <summary>
+    /// </summary>
     public interface ICommandHandler
     {
     }

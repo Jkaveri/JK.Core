@@ -25,13 +25,20 @@ namespace JKCore.Mediator
             where TCommand : IAsyncCommand<TResult>;
 
         /// <summary>
+        /// Resolve async command handler
         /// </summary>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
+        IAsyncCommandHandler<TCommand> ResolveAsyncHandler<TCommand>() where TCommand : IAsyncCommand;
+
+        /// <summary>
+        /// Resolve handler
+        /// </summary>
         ICommandHandler<TCommand, TResult> ResolveHandler<TCommand, TResult>() where TCommand : ICommand<TResult>;
+
+
+        /// <summary>
+        /// Resolve handler
+        /// </summary>
+        ICommandHandler<TCommand> ResolveHandler<TCommand>() where TCommand : ICommand;
+
     }
 }

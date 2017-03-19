@@ -23,4 +23,15 @@ namespace JKCore.Mediator.Commands
         /// </summary>
         bool Succeed { get; }
     }
+
+    /// <summary>
+    /// ICommand Result with no return data.
+    /// </summary>
+    public interface ICommandResult: IErrorItemContainer
+    {
+        /// <summary>
+        /// Gets a value indicating whether succeed.
+        /// </summary>
+        bool Succeed { get; }
+    }
 }

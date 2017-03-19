@@ -2,13 +2,11 @@
 {
     #region
 
-    using System.Threading.Tasks;
-
     using FluentAssertions;
-
+    using JKCore.Mediator.Commands;
     using JKCore.Mediator.Test.Commands;
     using JKCore.Mediator.Test.Shared;
-
+    using System.Threading.Tasks;
     using Xunit;
 
     #endregion
@@ -37,6 +35,42 @@
             // Assertions
             result.Succeed.Should().BeTrue();
             result.Data.Should().Be(command.ExpectedResult);
+            result.Errors.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task send_void_async_command_should_successful()
+        {
+            bool executed = false;
+            var command = new VoidAsyncCommand
+            {
+                Action = () => executed = true
+            };
+
+            // Actions
+            ICommandResult result = await _mediator.SendAsync(command);
+
+            // Assertions
+            result.Succeed.Should().BeTrue();
+            executed.Should().BeTrue();
+            result.Errors.Should().BeEmpty();
+        }
+
+        public void send_void_command_should_successful()
+        {
+
+            bool executed = false;
+            var command = new VoidCommand
+            {
+                Action = () => executed = true
+            };
+
+            // Actions
+            ICommandResult result = _mediator.Send(command);
+
+            // Assertions
+            result.Succeed.Should().BeTrue();
+            executed.Should().BeTrue();
             result.Errors.Should().BeEmpty();
         }
     }

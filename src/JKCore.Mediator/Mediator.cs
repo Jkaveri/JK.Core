@@ -5,14 +5,13 @@ namespace JKCore.Mediator
 {
     #region
 
+    using JKCore.Mediator.Commands;
+    using JKCore.Mediator.Events;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-
-    using JKCore.Mediator.Commands;
-    using JKCore.Mediator.Events;
 
     #endregion
 
@@ -104,15 +103,56 @@ namespace JKCore.Mediator
         {
             var commandType = command.GetType();
             var method = this._handlerResolver.GetType()
-                .GetMethod("ResolveHandler")
+                .GetMethods()
+                .Where(t =>
+                {
+                    if (t.Name == "ResolveHandler")
+                    {
+                        var args = t.GetGenericArguments();
+                        return args.Length == 2;
+                    }
+                    return false;
+                })
+                .First()
                 .MakeGenericMethod(commandType, typeof(TResult));
+
+            var handler = method.Invoke(_handlerResolver, null);
+
+            if (handler != null)
+            {
+                method = handler.GetType().GetMethod("Handle");
+                return (ICommandResult<TResult>)method.Invoke(handler, new object[] { command });
+            }
+
+            throw new InvalidOperationException("Handler not found");
+        }
+
+        /// <summary>
+        /// Send a command.
+        /// </summary>
+        public ICommandResult Send(ICommand command)
+        {
+            var commandType = command.GetType();
+            var method = this._handlerResolver.GetType()
+                .GetMethods()
+                .Where(t =>
+                {
+                    if (t.Name == "ResolveHandler")
+                    {
+                        var args = t.GetGenericArguments();
+                        return args.Length == 1;
+                    }
+                    return false;
+                })
+                .First()
+                .MakeGenericMethod(commandType);
 
             var handler = method.Invoke(this._handlerResolver, null);
 
             if (handler != null)
             {
                 method = handler.GetType().GetMethod("Handle");
-                return (ICommandResult<TResult>)method.Invoke(handler, new object[] { command });
+                return (ICommandResult)method.Invoke(handler, new object[] { command });
             }
 
             throw new InvalidOperationException("Handler not found");
@@ -132,8 +172,18 @@ namespace JKCore.Mediator
         public Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command)
         {
             var commandType = command.GetType();
-            var method = this._handlerResolver.GetType()
-                .GetMethod("ResolveAsyncHandler")
+            var method = _handlerResolver.GetType()
+                .GetMethods()
+                .Where(t =>
+                {
+                    if (t.Name == "ResolveAsyncHandler")
+                    {
+                        var args = t.GetGenericArguments();
+                        return args.Length == 2;
+                    }
+                    return false;
+                })
+                .First()
                 .MakeGenericMethod(commandType, typeof(TResult));
 
             var handler = method.Invoke(this._handlerResolver, null);
@@ -142,6 +192,38 @@ namespace JKCore.Mediator
             {
                 method = handler.GetType().GetMethod("Handle");
                 return (Task<ICommandResult<TResult>>)method.Invoke(handler, new object[] { command });
+            }
+
+            throw new InvalidOperationException("Handler not found");
+        }
+
+        /// <summary>
+        /// Send a command.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
+        public Task<ICommandResult> SendAsync(IAsyncCommand command)
+        {
+            var commandType = command.GetType();
+            var method = this._handlerResolver.GetType()
+                .GetMethods()
+                .Where(t =>
+                {
+                    if (t.Name == "ResolveAsyncHandler")
+                    {
+                        var args = t.GetGenericArguments();
+                        return args.Length == 1;
+                    }
+                    return false;
+                })
+                .First()
+                .MakeGenericMethod(commandType);
+
+            var handler = method.Invoke(this._handlerResolver, null);
+
+            if (handler != null)
+            {
+                method = handler.GetType().GetMethod("Handle");
+                return (Task<ICommandResult>)method.Invoke(handler, new object[] { command });
             }
 
             throw new InvalidOperationException("Handler not found");
