@@ -9,8 +9,8 @@ var buildNumber     = Argument<string>("buildNumber", "");
 var buildArtifacts      = Directory("./artifacts/packages");
 var sourceRoot          = "./src";
 var testsRoot           = "./test";
-var sourceProjects      = sourceRoot + "/**/project.json";
-var testProjects        = testsRoot + "/**/project.json";
+var sourceProjects      = sourceRoot + "/**/*.csproj";
+var testProjects        = testsRoot + "/**/*.csproj";
 var nugetConfigFile     = new FilePath("NuGet.config");
 
 
@@ -28,12 +28,14 @@ Task("Build")
 
 	foreach(var project in projects)
 	{
+        Information("build " + project.FullPath);
+        
         var settings = new DotNetCoreBuildSettings 
         {
             Configuration = configuration
         };
 
-        DotNetCoreBuild(project.GetDirectory().FullPath, settings); 
+        DotNetCoreBuild(project.FullPath, settings); 
     }
 });
 
@@ -57,7 +59,7 @@ Task("RunTests")
             settings.Framework = "netcoreapp1.1";
         }
 
-        DotNetCoreTest(project.GetDirectory().FullPath, settings);
+        DotNetCoreTest(project.FullPath, settings);
     }
 });
 
@@ -67,8 +69,6 @@ Task("Pack")
     .Does(() =>
 {
     var projects = GetFiles(sourceProjects);
-
-    Information("ALL PROJECTS");
     foreach (var project in projects) {
         var settings = new DotNetCorePackSettings
         {
@@ -94,6 +94,7 @@ Task("Clean")
 Task("Restore")
     .Does(() =>
 {
+    var projects = GetFiles(sourceProjects);
     DotNetCoreRestoreSettings settings = new DotNetCoreRestoreSettings();
 
     if (FileExists(nugetConfigFile)) 
@@ -105,10 +106,14 @@ Task("Restore")
             "https://www.myget.org/F/aspnet-contrib/api/v3/index.json",
             "https://dotnet.myget.org/F/aspnetcore-ci-dev/api/v3/index.json" 
         };
-    };    
+    };
 
-    DotNetCoreRestore(sourceRoot, settings);
-    DotNetCoreRestore(testsRoot, settings);
+	foreach(var project in projects)
+	{
+        Information("restore " + project.FullPath);
+        DotNetCoreRestore(project.FullPath, settings);
+    }
+
 });
 
 Task("Default")
