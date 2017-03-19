@@ -25,16 +25,22 @@ Task("Build")
     .Does(() =>
 {
 	var projects = GetFiles(sourceProjects);
+    var settings = new DotNetCoreBuildSettings 
+    {
+        Configuration = configuration
+    };
 
 	foreach(var project in projects)
 	{
         Information("build " + project.FullPath);
-        
-        var settings = new DotNetCoreBuildSettings 
-        {
-            Configuration = configuration
-        };
+        DotNetCoreBuild(project.FullPath, settings); 
+    }
 
+    projects = GetFiles(testProjects);
+
+    foreach(var project in projects)
+	{
+        Information("build " + project.FullPath);
         DotNetCoreBuild(project.FullPath, settings); 
     }
 });
@@ -94,7 +100,7 @@ Task("Clean")
 Task("Restore")
     .Does(() =>
 {
-    var projects = GetFiles(sourceProjects);
+    var sourceProjectFiles = GetFiles(sourceProjects);
     DotNetCoreRestoreSettings settings = new DotNetCoreRestoreSettings();
 
     if (FileExists(nugetConfigFile)) 
@@ -108,7 +114,15 @@ Task("Restore")
         };
     };
 
-	foreach(var project in projects)
+	foreach(var project in sourceProjectFiles)
+	{
+        Information("restore " + project.FullPath);
+        DotNetCoreRestore(project.FullPath, settings);
+    }
+
+    var testProjectFiles = GetFiles(testProjects);
+
+    foreach(var project in testProjectFiles)
 	{
         Information("restore " + project.FullPath);
         DotNetCoreRestore(project.FullPath, settings);
