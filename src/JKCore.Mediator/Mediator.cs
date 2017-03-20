@@ -12,6 +12,7 @@ namespace JKCore.Mediator
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
+    using JKCore.Mediator.Queries;
 
     #endregion
 
@@ -19,25 +20,50 @@ namespace JKCore.Mediator
     /// </summary>
     public class Mediator : IMediator
     {
-        private readonly ICommandHandlerResolver _handlerResolver;
-
-        private readonly IEventListenerResolver _listenerResolver;
+        private readonly ICommandHandlerProvider _handlerProvider;
+        private readonly IEventListenersProvider _listenersProvider;
+        private readonly IQueryProcessorProvider _processorProvider;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Mediator" /> class.
         /// </summary>
-        /// <param name="handlerResolver">
+        /// <param name="handlerProvider">
         ///     The handler resolver.
         /// </param>
-        /// <param name="listenerResolver">
+        /// <param name="listenersProvider">
         ///     The listener resolver.
+        /// </param>
+        /// <param name="processorProvider">
+        ///     Query processor provider.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public Mediator(ICommandHandlerResolver handlerResolver, IEventListenerResolver listenerResolver)
+        public Mediator(ICommandHandlerProvider handlerProvider, IEventListenersProvider listenersProvider, IQueryProcessorProvider processorProvider)
         {
-            _handlerResolver = handlerResolver ?? throw new ArgumentNullException(nameof(handlerResolver));
-            _listenerResolver = listenerResolver ?? throw new ArgumentNullException(nameof(listenerResolver));
+            _handlerProvider = handlerProvider ?? throw new ArgumentNullException(nameof(handlerProvider));
+            _listenersProvider = listenersProvider ?? throw new ArgumentNullException(nameof(listenersProvider));
+            _processorProvider = processorProvider ?? throw new ArgumentNullException(nameof(processorProvider));
+        }
+
+        /// <summary>
+        /// Execute <see cref="IQuery{TResult}"/>
+        /// </summary>
+        public Task<TResult> Execute<TResult>(IQuery<TResult> query)
+        {
+            var queryType = query.GetType();
+            var method = this._processorProvider.GetType()
+                .GetMethod("GetQueryProcessor")
+                .MakeGenericMethod(queryType, typeof(TResult));
+
+            var handler = method.Invoke(this._processorProvider, null);
+
+            if (handler != null)
+            {
+                method = handler.GetType().GetMethod("Execute");
+                return (Task<TResult>) method.Invoke(handler, new object[] { query });
+            }
+
+            throw new InvalidOperationException("Query processor not found.");
         }
 
         /// <summary>
@@ -49,7 +75,7 @@ namespace JKCore.Mediator
         /// </typeparam>
         public void Publish<TMessage>(TMessage message) where TMessage : IEvent
         {
-            var receivers = this._listenerResolver.ResolveListeners<TMessage>().ToList();
+            var receivers = this._listenersProvider.ResolveListeners<TMessage>().ToList();
 
             foreach (var receiver in receivers)
             {
@@ -68,7 +94,7 @@ namespace JKCore.Mediator
         /// </returns>
         public Task PublishAsync<TMessage>(TMessage message) where TMessage : IAsyncEvent
         {
-            var receivers = this._listenerResolver.ResolveAsyncListeners<TMessage>();
+            var receivers = this._listenersProvider.ResolveAsyncListeners<TMessage>();
             var asyncEventListeners = receivers as IList<IAsyncEventListener<TMessage>> ?? receivers.ToList();
             if (asyncEventListeners.Any())
             {
@@ -92,7 +118,7 @@ namespace JKCore.Mediator
         public ICommandResult<TResult> Send<TResult>(ICommand<TResult> command)
         {
             var commandType = command.GetType();
-            var method = this._handlerResolver.GetType()
+            var method = this._handlerProvider.GetType()
                 .GetMethods()
                 .Where(t =>
                 {
@@ -106,7 +132,7 @@ namespace JKCore.Mediator
                 .First()
                 .MakeGenericMethod(commandType, typeof(TResult));
 
-            var handler = method.Invoke(_handlerResolver, null);
+            var handler = method.Invoke(_handlerProvider, null);
 
             if (handler != null)
             {
@@ -123,7 +149,7 @@ namespace JKCore.Mediator
         public ICommandResult Send(ICommand command)
         {
             var commandType = command.GetType();
-            var method = this._handlerResolver.GetType()
+            var method = this._handlerProvider.GetType()
                 .GetMethods()
                 .Where(t =>
                 {
@@ -137,7 +163,7 @@ namespace JKCore.Mediator
                 .First()
                 .MakeGenericMethod(commandType);
 
-            var handler = method.Invoke(this._handlerResolver, null);
+            var handler = method.Invoke(this._handlerProvider, null);
 
             if (handler != null)
             {
@@ -162,7 +188,7 @@ namespace JKCore.Mediator
         public Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command)
         {
             var commandType = command.GetType();
-            var method = _handlerResolver.GetType()
+            var method = _handlerProvider.GetType()
                 .GetMethods()
                 .Where(t =>
                 {
@@ -176,7 +202,7 @@ namespace JKCore.Mediator
                 .First()
                 .MakeGenericMethod(commandType, typeof(TResult));
 
-            var handler = method.Invoke(this._handlerResolver, null);
+            var handler = method.Invoke(this._handlerProvider, null);
 
             if (handler != null)
             {
@@ -194,7 +220,7 @@ namespace JKCore.Mediator
         public Task<ICommandResult> SendAsync(IAsyncCommand command)
         {
             var commandType = command.GetType();
-            var method = this._handlerResolver.GetType()
+            var method = this._handlerProvider.GetType()
                 .GetMethods()
                 .Where(t =>
                 {
@@ -208,7 +234,7 @@ namespace JKCore.Mediator
                 .First()
                 .MakeGenericMethod(commandType);
 
-            var handler = method.Invoke(this._handlerResolver, null);
+            var handler = method.Invoke(this._handlerProvider, null);
 
             if (handler != null)
             {

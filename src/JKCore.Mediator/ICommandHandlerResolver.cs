@@ -3,15 +3,11 @@
 
 namespace JKCore.Mediator
 {
-    #region
-
     using JKCore.Mediator.Commands;
-
-    #endregion
 
     /// <summary>
     /// </summary>
-    public interface ICommandHandlerResolver
+    public interface ICommandHandlerProvider
     {
         /// <summary>
         /// </summary>

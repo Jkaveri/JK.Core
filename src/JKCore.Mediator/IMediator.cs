@@ -9,6 +9,7 @@ namespace JKCore.Mediator
 
     using JKCore.Mediator.Commands;
     using JKCore.Mediator.Events;
+    using JKCore.Mediator.Queries;
 
     #endregion
 
@@ -58,5 +59,10 @@ namespace JKCore.Mediator
         /// <param name="command">A command</param>
         /// <returns><see cref="ICommandResult"/></returns>
         Task<ICommandResult> SendAsync(IAsyncCommand command);
+
+        /// <summary>
+        /// Execute <see cref="IQuery{TResult}"/>
+        /// </summary>
+        Task<TResult> Execute<TResult>(IQuery<TResult> query);
     }
 }

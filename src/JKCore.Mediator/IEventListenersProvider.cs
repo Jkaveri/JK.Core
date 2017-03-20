@@ -3,17 +3,12 @@
 
 namespace JKCore.Mediator
 {
-    #region
-
-    using System.Collections.Generic;
-
     using JKCore.Mediator.Events;
-
-    #endregion
+    using System.Collections.Generic;
 
     /// <summary>
     /// </summary>
-    public interface IEventListenerResolver
+    public interface IEventListenersProvider
     {
         /// <summary>
         /// </summary>

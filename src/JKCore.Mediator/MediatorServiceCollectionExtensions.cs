@@ -8,7 +8,7 @@ namespace JKCore.Mediator
     using JKCore.Extensions;
     using JKCore.Mediator.Commands;
     using JKCore.Mediator.Events;
-
+    using JKCore.Mediator.Queries;
     using Microsoft.Extensions.DependencyInjection;
 
     #endregion
@@ -27,8 +27,9 @@ namespace JKCore.Mediator
         public static IServiceCollection AddMediator(this IServiceCollection services)
         {
             services.AddTransient<IMediator, Mediator>();
-            services.AddTransient<ICommandHandlerResolver, MediatorRegister>();
-            services.AddTransient<IEventListenerResolver, MediatorRegister>();
+            services.AddTransient<ICommandHandlerProvider, CommandHandlerProvider>();
+            services.AddTransient<IEventListenersProvider, EventListenersProvider>();
+            services.AddTransient<IQueryProcessorProvider, QueryProcessorResolver>();
             return services;
         }
 
@@ -47,7 +48,7 @@ namespace JKCore.Mediator
                     collector =>
                         {
                             // get all services that are implementation of theses types
-                            var types = new[] { typeof(ICommandHandler), typeof(IEventListener) };
+                            var types = new[] { typeof(ICommandHandler), typeof(IEventListener), typeof(IQueryProcessor) };
                             collector.ImplementationOf(types);
                         })
                 .ByImplementedInterfaces();
