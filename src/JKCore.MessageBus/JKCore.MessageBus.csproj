@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionSufix>dev</VersionSufix>
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>JKCore.MessageBus</AssemblyName>
     <PackageId>JKCore.MessageBus</PackageId>

@@ -3,6 +3,7 @@
     using System;
 
     using Microsoft.Extensions.DependencyInjection;
+    using JKCore.Mediator.Test.CommandHandlers;
 
     public class MediatorFixture
     {
@@ -13,7 +14,7 @@
         public MediatorFixture()
         { 
             this._services = new ServiceCollection();
-            this._services.AddMediator().AddMediatorTypesInAssemblyOf<Program>();
+            this._services.AddMediator().AddMediatorTypesInAssemblyOf<ExpectedResultAsyncCommandHandler>();
             this._serviceProvider = this._services.BuildServiceProvider();
         }
 

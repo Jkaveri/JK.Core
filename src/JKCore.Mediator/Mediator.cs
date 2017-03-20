@@ -36,18 +36,8 @@ namespace JKCore.Mediator
         /// </exception>
         public Mediator(ICommandHandlerResolver handlerResolver, IEventListenerResolver listenerResolver)
         {
-            if (handlerResolver == null)
-            {
-                throw new ArgumentNullException(nameof(handlerResolver));
-            }
-
-            if (listenerResolver == null)
-            {
-                throw new ArgumentNullException(nameof(listenerResolver));
-            }
-
-            this._handlerResolver = handlerResolver;
-            this._listenerResolver = listenerResolver;
+            _handlerResolver = handlerResolver ?? throw new ArgumentNullException(nameof(handlerResolver));
+            _listenerResolver = listenerResolver ?? throw new ArgumentNullException(nameof(listenerResolver));
         }
 
         /// <summary>
