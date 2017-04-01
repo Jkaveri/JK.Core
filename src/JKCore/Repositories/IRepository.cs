@@ -34,7 +34,7 @@ namespace JKCore.Repositories
         /// </summary>
         /// <returns>
         /// </returns>
-        IQueryable<T> Select();
+        IQueryable<T> GetQueryable();
 
         /// <summary>
         /// </summary>

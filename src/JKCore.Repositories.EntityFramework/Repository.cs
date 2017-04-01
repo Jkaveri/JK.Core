@@ -32,13 +32,8 @@ namespace JKCore.Repositories.EntityFramework
         /// </exception>
         protected Repository(DbContext dbcontext)
         {
-            if (dbcontext == null)
-            {
-                throw new ArgumentNullException(nameof(dbcontext));
-            }
-
-            this.DbContext = dbcontext;
-            this.DbSet = this.DbContext.Set<TEntity>();
+            this.DbContext = dbcontext ?? throw new ArgumentNullException(nameof(dbcontext));
+            this.DbSet = DbContext.Set<TEntity>();
         }
 
         /// <summary>
@@ -58,8 +53,14 @@ namespace JKCore.Repositories.EntityFramework
         /// </param>
         public void Delete(TEntity entity)
         {
-            this.DbContext.Entry(entity).State = EntityState.Deleted;
-            this.DbSet.Attach(entity);
+            var entry = this.DbContext.Entry(entity);
+            if (entry.State != EntityState.Deleted)
+                entry.State = EntityState.Deleted;
+            else
+            {
+                DbSet.Attach(entity);
+                DbSet.Remove(entity);
+            }
         }
 
         /// <summary>
@@ -69,15 +70,27 @@ namespace JKCore.Repositories.EntityFramework
         /// </param>
         public void Insert(TEntity entity)
         {
-            this.DbContext.Entry(entity).State = EntityState.Added;
-            this.DbSet.Attach(entity);
+            // get tracking entry.
+            var entry = this.DbContext.Entry(entity);
+
+            // check entry state.
+            if (entry.State != EntityState.Detached)
+            {
+                // change state to added.
+                entry.State = EntityState.Added;
+            }
+            else
+            {
+                // add to entities set.
+                DbSet.Add(entity);
+            }
         }
 
         /// <summary>
         /// </summary>
         /// <returns>
         /// </returns>
-        public IQueryable<TEntity> Select()
+        public IQueryable<TEntity> GetQueryable()
         {
             return this.DbSet;
         }
@@ -89,8 +102,19 @@ namespace JKCore.Repositories.EntityFramework
         /// </param>
         public void Update(TEntity entity)
         {
-            this.DbContext.Entry(entity).State = EntityState.Modified;
-            this.DbSet.Attach(entity);
-        }
+            var entry = DbContext.Entry(entity);
+
+            switch (entry.State)
+            {
+                case EntityState.Detached:
+                    DbSet.Attach(entity);
+                    break;
+                case EntityState.Unchanged:
+                    entry.State = EntityState.Modified;
+                    break;
+                default:
+                    break;
+            }
+        }        
     }
 }
