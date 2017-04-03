@@ -22,6 +22,8 @@ namespace JKCore.Repositories.EntityFramework
     public abstract class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
+        private readonly IUnitOfWork _uow;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Repository{TEntity}"/> class.
         /// </summary>
@@ -34,6 +36,7 @@ namespace JKCore.Repositories.EntityFramework
         {
             this.DbContext = dbcontext ?? throw new ArgumentNullException(nameof(dbcontext));
             this.DbSet = DbContext.Set<TEntity>();
+            _uow = new UnitOfWork(dbcontext);
         }
 
         /// <summary>
@@ -45,6 +48,11 @@ namespace JKCore.Repositories.EntityFramework
         /// Gets the db set.
         /// </summary>
         protected DbSet<TEntity> DbSet { get; private set; }
+
+        /// <summary>
+        /// Get unit of work
+        /// </summary>
+        public IUnitOfWork Uow => _uow;
 
         /// <summary>
         /// </summary>
@@ -115,6 +123,6 @@ namespace JKCore.Repositories.EntityFramework
                 default:
                     break;
             }
-        }        
+        }
     }
 }
