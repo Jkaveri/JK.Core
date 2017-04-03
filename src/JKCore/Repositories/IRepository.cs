@@ -42,11 +42,6 @@ namespace JKCore.Repositories
         ///     The entity.
         /// </param>
         void Update(T entity);
-
-        /// <summary>
-        /// Get database service.
-        /// </summary>
-        IUnitOfWork Uow { get; }
     }
 
     /// <summary>
