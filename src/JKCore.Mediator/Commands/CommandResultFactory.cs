@@ -1,8 +1,10 @@
 ﻿namespace JKCore.Mediator.Commands
 {
+    using JKCore.Models;
     #region
 
     using System;
+    using System.Collections.Generic;
 
     #endregion
 
@@ -63,6 +65,16 @@
         {
             var result = this.Failure();
             result.AddError(exception);
+            return result;
+        }
+    
+        /// <summary>
+        /// Return failed result with errors.
+        /// </summary>
+        protected ICommandResult<TResult> Failure(IEnumerable<ErrorItem> errors)
+        {
+            var result = this.Failure();
+            result.AddErrors(errors);
             return result;
         }
 
