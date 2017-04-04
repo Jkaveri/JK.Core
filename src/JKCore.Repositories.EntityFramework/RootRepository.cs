@@ -11,6 +11,7 @@ namespace JKCore.Repositories.EntityFramework
     using JKCore.Repositories;
 
     using Microsoft.EntityFrameworkCore;
+    using System.Threading;
 
     #endregion
 
@@ -60,19 +61,7 @@ namespace JKCore.Repositories.EntityFramework
         /// </param>
         /// <returns>
         /// </returns>
-        public TEntity FindById(TKey id)
-        {
-            return this.DbSet.Find(id);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="id">
-        /// The id.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public Task<TEntity> FindByIdAsync(TKey id)
+        public Task<TEntity> FindByIdAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken))
         {
             return this.DbSet.FindAsync(id);
         }

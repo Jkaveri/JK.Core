@@ -1,10 +1,6 @@
 ﻿namespace JKCore.Repositories.EF.Test
 {
     using JKCore.Repositories.EF.Test.Helpers;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Xunit;
     using JKCore.Repositories.EF.Test.Data;
@@ -14,7 +10,7 @@
     {
 
         [Fact]
-        public void insert_should_success()
+        public async Task insert_should_success()
         {
          
             using (var dbContext = CreateDbContext())
@@ -27,7 +23,7 @@
                 };
 
                 // actions
-                repo.Insert(model);
+                await repo.InsertAsync(model);
 
                 dbContext.SaveChanges();
 
@@ -42,7 +38,7 @@
         }
 
         [Fact]
-        public void update_should_success()
+        public async Task update_should_success()
         {
             // Arrange
             using (var dbContext = CreateDbContext())
@@ -56,13 +52,13 @@
                     Age = 1
                 };
 
-                repo.Insert(model);
+                await repo.InsertAsync(model);
 
                 // Actions.
               
                 model.Age = expectedAge;
 
-                repo.Update(model);
+                await repo.UpdateAsync(model);
 
                 dbContext.SaveChanges();
 

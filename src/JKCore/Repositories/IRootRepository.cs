@@ -8,6 +8,7 @@ namespace JKCore.Repositories
     using System.Threading.Tasks;
 
     using JKCore.Modeling;
+    using System.Threading;
 
     #endregion
 
@@ -27,15 +28,6 @@ namespace JKCore.Repositories
         /// </param>
         /// <returns>
         /// </returns>
-        TEntity FindById(TKey id);
-
-        /// <summary>
-        /// </summary>
-        /// <param name="id">
-        ///     The id.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        Task<TEntity> FindByIdAsync(TKey id);
+        Task<TEntity> FindByIdAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

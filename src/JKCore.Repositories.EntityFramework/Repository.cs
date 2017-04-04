@@ -7,10 +7,11 @@ namespace JKCore.Repositories.EntityFramework
 
     using System;
     using System.Linq;
-
+    using System.Threading.Tasks;
     using JKCore.Repositories;
 
     using Microsoft.EntityFrameworkCore;
+    using System.Threading;
 
     #endregion
 
@@ -44,14 +45,18 @@ namespace JKCore.Repositories.EntityFramework
         /// <summary>
         /// Gets the db set.
         /// </summary>
-        protected DbSet<TEntity> DbSet { get; private set; }
+        protected DbSet<TEntity> DbSet { get; private set; }        
 
         /// <summary>
         /// </summary>
-        /// <param name="entity">
-        /// The entity.
-        /// </param>
-        public void Delete(TEntity entity)
+        /// <returns>
+        /// </returns>
+        public IQueryable<TEntity> GetQueryable()
+        {
+            return this.DbSet;
+        }
+
+        public virtual Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             var entry = this.DbContext.Entry(entity);
             if (entry.State != EntityState.Deleted)
@@ -61,14 +66,10 @@ namespace JKCore.Repositories.EntityFramework
                 DbSet.Attach(entity);
                 DbSet.Remove(entity);
             }
+            return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="entity">
-        /// The entity.
-        /// </param>
-        public void Insert(TEntity entity)
+        public virtual Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             // get tracking entry.
             var entry = this.DbContext.Entry(entity);
@@ -84,23 +85,11 @@ namespace JKCore.Repositories.EntityFramework
                 // add to entities set.
                 DbSet.Add(entity);
             }
+
+            return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <returns>
-        /// </returns>
-        public IQueryable<TEntity> GetQueryable()
-        {
-            return this.DbSet;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="entity">
-        /// The entity.
-        /// </param>
-        public void Update(TEntity entity)
+        public virtual Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             var entry = DbContext.Entry(entity);
 
@@ -115,6 +104,8 @@ namespace JKCore.Repositories.EntityFramework
                 default:
                     break;
             }
+
+            return Task.CompletedTask;
         }
     }
 }

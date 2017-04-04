@@ -52,7 +52,10 @@ namespace JKCore.Repositories.EntityFramework
         public EntityRepository(DbContext dbcontext)
             : base(dbcontext)
         {
+           
         }
+
+
 
         /// <summary>
         /// </summary>
@@ -63,23 +66,9 @@ namespace JKCore.Repositories.EntityFramework
         /// </returns>
         /// <exception cref="NotImplementedException">
         /// </exception>
-        public TEntity GetById(TKey id)
+        public Task<TEntity> FindByIdAsync(TKey id)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="id">
-        /// The id.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        /// <exception cref="NotImplementedException">
-        /// </exception>
-        public Task<TEntity> GetByIdAsync(TKey id)
-        {
-            throw new NotImplementedException();
+            return DbSet.FindAsync(id);
         }
     }
 }
