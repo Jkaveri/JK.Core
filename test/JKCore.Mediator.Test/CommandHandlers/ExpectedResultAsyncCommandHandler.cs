@@ -1,5 +1,7 @@
 ﻿namespace JKCore.Mediator.Test.CommandHandlers
 {
+    using System;
+    using System.Threading;
     #region
 
     using System.Threading.Tasks;
@@ -11,9 +13,10 @@
 
     public class ExpectedResultAsyncCommandHandler : AsyncCommandHandler<ExpectedResultAsyncCommand, object>
     {
-        public override Task<ICommandResult<object>> Handle(ExpectedResultAsyncCommand command)
+        public override Task<ICommandResult<object>> HandleAsync(ExpectedResultAsyncCommand command, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Task.FromResult(this.Success(command.ExpectedResult));
         }
+        
     }
 }

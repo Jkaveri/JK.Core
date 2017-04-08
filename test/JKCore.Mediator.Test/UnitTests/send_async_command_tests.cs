@@ -55,23 +55,5 @@
             executed.Should().BeTrue();
             result.Errors.Should().BeEmpty();
         }
-
-        public void send_void_command_should_successful()
-        {
-
-            bool executed = false;
-            var command = new VoidCommand
-            {
-                Action = () => executed = true
-            };
-
-            // Actions
-            ICommandResult result = _mediator.Send(command);
-
-            // Assertions
-            result.Succeed.Should().BeTrue();
-            executed.Should().BeTrue();
-            result.Errors.Should().BeEmpty();
-        }
     }
 }

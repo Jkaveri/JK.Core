@@ -22,12 +22,8 @@ namespace JKCore.Repositories
         where TEntity : class, IAggregateRoot<TKey>
     {
         /// <summary>
+        /// Find entity by id.
         /// </summary>
-        /// <param name="id">
-        ///     The id.
-        /// </param>
-        /// <returns>
-        /// </returns>
         Task<TEntity> FindByIdAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -1,6 +1,7 @@
 ﻿
 namespace JKCore.Mediator.Queries
 {
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -12,8 +13,11 @@ namespace JKCore.Mediator.Queries
         /// Execute query and return a result.
         /// </summary>
         /// <returns></returns>
-        Task<TResult> Execute(TQuery query);
+        Task<TResult> ExecuteAsync(TQuery query, CancellationToken cancellationToken = default(CancellationToken));
     }
 
+    /// <summary>
+    /// Query processor interface.
+    /// </summary>
     public interface IQueryProcessor { }
 }

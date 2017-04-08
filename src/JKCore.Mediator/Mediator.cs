@@ -13,6 +13,7 @@ namespace JKCore.Mediator
     using System.Reflection;
     using System.Threading.Tasks;
     using JKCore.Mediator.Queries;
+    using System.Threading;
 
     #endregion
 
@@ -48,7 +49,7 @@ namespace JKCore.Mediator
         /// <summary>
         /// Execute <see cref="IQuery{TResult}"/>
         /// </summary>
-        public Task<TResult> Execute<TResult>(IQuery<TResult> query)
+        public Task<TResult> Execute<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             var queryType = query.GetType();
             var method = this._processorProvider.GetType()
@@ -59,40 +60,17 @@ namespace JKCore.Mediator
 
             if (handler != null)
             {
-                method = handler.GetType().GetMethod("Execute");
-                return (Task<TResult>) method.Invoke(handler, new object[] { query });
+                method = handler.GetType().GetMethod("ExecuteAsync");
+                return (Task<TResult>) method.Invoke(handler, new object[] { query, cancellationToken });
             }
 
             throw new InvalidOperationException("Query processor not found.");
         }
-
+        
         /// <summary>
+        /// Publish event async.
         /// </summary>
-        /// <param name="message">
-        ///     The message.
-        /// </param>
-        /// <typeparam name="TMessage">
-        /// </typeparam>
-        public void Publish<TMessage>(TMessage message) where TMessage : IEvent
-        {
-            var receivers = this._listenersProvider.ResolveListeners<TMessage>().ToList();
-
-            foreach (var receiver in receivers)
-            {
-                receiver.Handle(message);
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="message">
-        ///     The message.
-        /// </param>
-        /// <typeparam name="TMessage">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        public Task PublishAsync<TMessage>(TMessage message) where TMessage : IAsyncEvent
+        public Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default(CancellationToken)) where TMessage : IAsyncEvent
         {
             var receivers = this._listenersProvider.ResolveAsyncListeners<TMessage>();
             var asyncEventListeners = receivers as IList<IAsyncEventListener<TMessage>> ?? receivers.ToList();
@@ -103,89 +81,11 @@ namespace JKCore.Mediator
 
             return Task.Delay(0);
         }
-
+        
         /// <summary>
+        /// Send command async.
         /// </summary>
-        /// <param name="command">
-        ///     The command.
-        /// </param>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// </exception>
-        public ICommandResult<TResult> Send<TResult>(ICommand<TResult> command)
-        {
-            var commandType = command.GetType();
-            var method = this._handlerProvider.GetType()
-                .GetMethods()
-                .Where(t =>
-                {
-                    if (t.Name == "ResolveHandler")
-                    {
-                        var args = t.GetGenericArguments();
-                        return args.Length == 2;
-                    }
-                    return false;
-                })
-                .First()
-                .MakeGenericMethod(commandType, typeof(TResult));
-
-            var handler = method.Invoke(_handlerProvider, null);
-
-            if (handler != null)
-            {
-                method = handler.GetType().GetMethod("Handle");
-                return (ICommandResult<TResult>)method.Invoke(handler, new object[] { command });
-            }
-
-            throw new InvalidOperationException("Handler not found");
-        }
-
-        /// <summary>
-        /// Send a command.
-        /// </summary>
-        public ICommandResult Send(ICommand command)
-        {
-            var commandType = command.GetType();
-            var method = this._handlerProvider.GetType()
-                .GetMethods()
-                .Where(t =>
-                {
-                    if (t.Name == "ResolveHandler")
-                    {
-                        var args = t.GetGenericArguments();
-                        return args.Length == 1;
-                    }
-                    return false;
-                })
-                .First()
-                .MakeGenericMethod(commandType);
-
-            var handler = method.Invoke(this._handlerProvider, null);
-
-            if (handler != null)
-            {
-                method = handler.GetType().GetMethod("Handle");
-                return (ICommandResult)method.Invoke(handler, new object[] { command });
-            }
-
-            throw new InvalidOperationException("Handler not found");
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="command">
-        ///     The command.
-        /// </param>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// </exception>
-        public Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command)
+        public Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellationToken = default(CancellationToken))
         {
             var commandType = command.GetType();
             var method = _handlerProvider.GetType()
@@ -206,8 +106,8 @@ namespace JKCore.Mediator
 
             if (handler != null)
             {
-                method = handler.GetType().GetMethod("Handle");
-                return (Task<ICommandResult<TResult>>)method.Invoke(handler, new object[] { command });
+                method = handler.GetType().GetMethod("HandleAsync");
+                return (Task<ICommandResult<TResult>>)method.Invoke(handler, new object[] { command, cancellationToken });
             }
 
             throw new InvalidOperationException("Handler not found");
@@ -216,8 +116,7 @@ namespace JKCore.Mediator
         /// <summary>
         /// Send a command.
         /// </summary>
-        /// <exception cref="InvalidOperationException"></exception>
-        public Task<ICommandResult> SendAsync(IAsyncCommand command)
+        public Task<ICommandResult> SendAsync(IAsyncCommand command, CancellationToken cancellationToken = default(CancellationToken))
         {
             var commandType = command.GetType();
             var method = this._handlerProvider.GetType()
@@ -238,8 +137,8 @@ namespace JKCore.Mediator
 
             if (handler != null)
             {
-                method = handler.GetType().GetMethod("Handle");
-                return (Task<ICommandResult>)method.Invoke(handler, new object[] { command });
+                method = handler.GetType().GetMethod("HandleAsync");
+                return (Task<ICommandResult>)method.Invoke(handler, new object[] { command, cancellationToken });
             }
 
             throw new InvalidOperationException("Handler not found");

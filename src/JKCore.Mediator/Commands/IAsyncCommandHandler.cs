@@ -3,6 +3,7 @@
 
 namespace JKCore.Mediator.Commands
 {
+    using System.Threading;
     #region
 
     using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace JKCore.Mediator.Commands
         /// Handle async command.
         /// </summary>
         /// <returns><see cref="ICommandResult{TData}"/></returns>
-        Task<ICommandResult<TResult>> Handle(TCommand command);
+        Task<ICommandResult<TResult>> HandleAsync(TCommand command, CancellationToken cancellationToken = default(CancellationToken));
     }
 
     /// <summary>
@@ -35,6 +36,6 @@ namespace JKCore.Mediator.Commands
         /// Handle async command.
         /// </summary>
         /// <returns><see cref="ICommandResult"/></returns>
-        Task<ICommandResult> Handle(TCommand command);
+        Task<ICommandResult> HandleAsync(TCommand command, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

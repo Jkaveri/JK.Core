@@ -1,5 +1,6 @@
 ﻿namespace JKCore.Mediator.Commands
 {
+    using System.Threading;
     #region
 
     using System.Threading.Tasks;
@@ -23,7 +24,7 @@
         /// </param>
         /// <returns>
         /// </returns>
-        public abstract Task<ICommandResult<TResult>> Handle(TCommand command);
+        public abstract Task<ICommandResult<TResult>> HandleAsync(TCommand command, CancellationToken cancellationToken = default(CancellationToken));
     }
 
     /// <summary>
@@ -37,11 +38,6 @@
         /// <summary>
         ///     Handle command asynchronously.
         /// </summary>
-        /// <param name="command">
-        ///     The command.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public abstract Task<ICommandResult> Handle(TCommand command);
+        public abstract Task<ICommandResult> HandleAsync(TCommand command, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -10,6 +10,7 @@ namespace JKCore.Mediator
     using JKCore.Mediator.Commands;
     using JKCore.Mediator.Events;
     using JKCore.Mediator.Queries;
+    using System.Threading;
 
     #endregion
 
@@ -18,51 +19,23 @@ namespace JKCore.Mediator
     public interface IMediator
     {
         /// <summary>
+        /// Publish envent async.
         /// </summary>
-        /// <typeparam name="TMessage"></typeparam>
-        /// <param name="message"></param>
-        void Publish<TMessage>(TMessage message) where TMessage : IEvent;
-
+        Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default(CancellationToken)) where TMessage : IAsyncEvent;
+        
         /// <summary>
+        /// Sends command asynchronous.
         /// </summary>
-        /// <typeparam name="TMessage"></typeparam>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        Task PublishAsync<TMessage>(TMessage message) where TMessage : IAsyncEvent;
-
-        /// <summary>
-        /// Sends the command.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="command">The command.</param>
-        /// <returns></returns>
-        ICommandResult<TResult> Send<TResult>(ICommand<TResult> command);
-
-        /// <summary>
-        /// Sends the command.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        /// <returns></returns>
-        ICommandResult Send(ICommand command);
+        Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Sends command asynchronous.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="command">The command.</param>
-        /// <returns><typeparamref name="TResult"/></returns>
-        Task<ICommandResult<TResult>> SendAsync<TResult>(IAsyncCommand<TResult> command);
-
-        /// <summary>
-        /// Sends command asynchronous.
-        /// </summary>
-        /// <param name="command">A command</param>
-        /// <returns><see cref="ICommandResult"/></returns>
-        Task<ICommandResult> SendAsync(IAsyncCommand command);
+        Task<ICommandResult> SendAsync(IAsyncCommand command, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Execute <see cref="IQuery{TResult}"/>
         /// </summary>
-        Task<TResult> Execute<TResult>(IQuery<TResult> query);
+        Task<TResult> Execute<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

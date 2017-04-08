@@ -70,54 +70,5 @@ namespace JKCore.Mediator
 
             return handler;
         }
-
-       
-        /// <summary>
-        ///     The resolve handler.
-        /// </summary>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        ///     The <see cref="ICommandHandler" />.
-        /// </returns>
-        /// <exception cref="HandlerNotFound">
-        /// </exception>
-        public ICommandHandler<TCommand, TResult> ResolveHandler<TCommand, TResult>() where TCommand : ICommand<TResult>
-        {
-            var cmdType = typeof(TCommand);
-            var handler = this._serviceProvider.GetService<ICommandHandler<TCommand, TResult>>();
-            if (handler == null)
-            {
-                throw new HandlerNotFound(typeof(TCommand));
-            }
-
-            return handler;
-        }
-
-        /// <summary>
-        ///     The resolve handler.
-        /// </summary>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <returns>
-        ///     The <see cref="ICommandHandler" />.
-        /// </returns>
-        /// <exception cref="HandlerNotFound">
-        /// </exception>
-        public ICommandHandler<TCommand> ResolveHandler<TCommand>() where TCommand : ICommand
-        {
-            var cmdType = typeof(TCommand);
-
-            var handler = this._serviceProvider.GetService<ICommandHandler<TCommand>>();
-            if (handler == null)
-            {
-                throw new HandlerNotFound(typeof(TCommand));
-            }
-
-            return handler;
-        }
-
     }
 }
