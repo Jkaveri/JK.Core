@@ -1,41 +1,42 @@
-﻿using System;
+﻿// Copyright (c) Ho Nguyen. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+#region
+
+using System;
 using System.Collections.Generic;
 using JKCore.Models;
 
-namespace JKCore.Mediator.Commands
+#endregion
+
+namespace JKCore.Mediator
 {
-    #region
-
-    #endregion
-
     /// <summary>
     /// </summary>
-    /// <typeparam name="TResult">
-    /// </typeparam>
     public abstract class CommandResultFactory<TResult>
     {
         /// <summary>
         ///     Fail result.
         /// </summary>
-        protected ICommandResult<TResult> Failure()
+        protected IMediatorResult<TResult> Failure()
         {
-            return new CommandResult<TResult>(false);
+            return new MediatorResult<TResult>(false);
         }
 
         /// <summary>
         ///     Fail result with inner data.
         /// </summary>
-        protected ICommandResult<TResult> Failure(TResult data)
+        protected IMediatorResult<TResult> Failure(TResult data)
         {
-            return new CommandResult<TResult>(false, data);
+            return new MediatorResult<TResult>(false, data);
         }
 
         /// <summary>
         ///     Fail result with inner data and collection of <see cref="ErrorItem" />
         /// </summary>
-        protected ICommandResult<TResult> Failure(TResult data, IEnumerable<ErrorItem> errors)
+        protected IMediatorResult<TResult> Failure(TResult data, IEnumerable<ErrorItem> errors)
         {
-            ICommandResult<TResult> result = Failure(data);
+            var result = Failure(data);
 
             result.AddErrors(errors);
 
@@ -45,15 +46,15 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         ///     Fail result with inner data and <see cref="ErrorItem" />
         /// </summary>
-        protected ICommandResult<TResult> Failure(TResult data, ErrorItem error)
+        protected IMediatorResult<TResult> Failure(TResult data, ErrorItem error)
         {
-            return Failure(data, new[] { error });
+            return Failure(data, new[] {error});
         }
 
         /// <summary>
         ///     Fail result with inner data and message.
         /// </summary>
-        protected ICommandResult<TResult> Failure(TResult data, string message)
+        protected IMediatorResult<TResult> Failure(TResult data, string message)
         {
             return Failure(data, new ErrorItem(message));
         }
@@ -61,7 +62,7 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         ///     Fail result with inner data and message and <see cref="Exception" />
         /// </summary>
-        protected ICommandResult<TResult> Failure(TResult data, string message, Exception exception)
+        protected IMediatorResult<TResult> Failure(TResult data, string message, Exception exception)
         {
             return Failure(data, new ErrorItem(message, exception));
         }
@@ -69,7 +70,7 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         ///     Fail result with inner data and <see cref="Exception" />
         /// </summary>
-        protected ICommandResult<TResult> Failure(TResult data, Exception exception)
+        protected IMediatorResult<TResult> Failure(TResult data, Exception exception)
         {
             return Failure(data, new ErrorItem(exception));
         }
@@ -78,7 +79,7 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         ///     Fail result with message.
         /// </summary>
-        protected ICommandResult<TResult> Failure(string message)
+        protected IMediatorResult<TResult> Failure(string message)
         {
             return Failure(new ErrorItem(message));
         }
@@ -86,7 +87,7 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         ///     Fail result with message and <see cref="Exception" />
         /// </summary>
-        protected ICommandResult<TResult> Failure(string message, Exception exception)
+        protected IMediatorResult<TResult> Failure(string message, Exception exception)
         {
             return Failure(new ErrorItem(message, exception));
         }
@@ -94,7 +95,7 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         ///     Fail result with <see cref="Exception" />
         /// </summary>
-        protected ICommandResult<TResult> Failure(Exception exception)
+        protected IMediatorResult<TResult> Failure(Exception exception)
         {
             return Failure(new ErrorItem(exception));
         }
@@ -102,9 +103,9 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         ///     Fail result with collection of <see cref="ErrorItem" />
         /// </summary>
-        protected ICommandResult<TResult> Failure(IEnumerable<ErrorItem> errors)
+        protected IMediatorResult<TResult> Failure(IEnumerable<ErrorItem> errors)
         {
-            ICommandResult<TResult> result = Failure();
+            var result = Failure();
             result.AddErrors(errors);
             return result;
         }
@@ -112,25 +113,25 @@ namespace JKCore.Mediator.Commands
         /// <summary>
         ///     Fail result with error item.
         /// </summary>
-        protected ICommandResult<TResult> Failure(ErrorItem error)
+        protected IMediatorResult<TResult> Failure(ErrorItem error)
         {
-            return Failure(new[] { error });
+            return Failure(new[] {error});
         }
 
         /// <summary>
-        /// Success result.
+        ///     Success result.
         /// </summary>
-        protected ICommandResult<TResult> Success()
+        protected IMediatorResult<TResult> Success()
         {
-            return new CommandResult<TResult>(true);
+            return new MediatorResult<TResult>(true);
         }
 
         /// <summary>
-        /// Success result with inner data.
+        ///     Success result with inner data.
         /// </summary>
-        protected ICommandResult<TResult> Success(TResult data)
+        protected IMediatorResult<TResult> Success(TResult data)
         {
-            return new CommandResult<TResult>(true, data);
+            return new MediatorResult<TResult>(true, data);
         }
     }
 
@@ -143,9 +144,9 @@ namespace JKCore.Mediator.Commands
         /// </summary>
         /// <returns>
         /// </returns>
-        protected ICommandResult Failure()
+        protected IMediatorResult Failure()
         {
-            return new CommandResult(false);
+            return new MediatorResult(false);
         }
 
         /// <summary>
@@ -155,9 +156,9 @@ namespace JKCore.Mediator.Commands
         /// </param>
         /// <returns>
         /// </returns>
-        protected ICommandResult Failure(string message)
+        protected IMediatorResult Failure(string message)
         {
-            ICommandResult result = Failure();
+            var result = Failure();
             result.AddError(message);
             return result;
         }
@@ -172,9 +173,9 @@ namespace JKCore.Mediator.Commands
         /// </param>
         /// <returns>
         /// </returns>
-        protected ICommandResult Failure(string message, Exception exception)
+        protected IMediatorResult Failure(string message, Exception exception)
         {
-            ICommandResult result = Failure();
+            var result = Failure();
             result.AddError(message, exception);
             return result;
         }
@@ -186,9 +187,9 @@ namespace JKCore.Mediator.Commands
         /// </param>
         /// <returns>
         /// </returns>
-        protected ICommandResult Failure(Exception exception)
+        protected IMediatorResult Failure(Exception exception)
         {
-            ICommandResult result = Failure();
+            var result = Failure();
             result.AddError(exception);
             return result;
         }
@@ -197,9 +198,9 @@ namespace JKCore.Mediator.Commands
         /// </summary>
         /// <returns>
         /// </returns>
-        protected ICommandResult Success()
+        protected IMediatorResult Success()
         {
-            return new CommandResult(true);
+            return new MediatorResult(true);
         }
     }
 }

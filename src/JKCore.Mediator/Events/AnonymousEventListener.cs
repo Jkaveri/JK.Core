@@ -1,11 +1,15 @@
 ﻿// Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+#region
+
+using System;
+
+#endregion
+
 namespace JKCore.Mediator.Events
 {
     #region
-
-    using System;
 
     #endregion
 
@@ -19,10 +23,10 @@ namespace JKCore.Mediator.Events
         private Action<TMessage> _receiver;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnonymousEventListener{TMessage}"/> class.
+        ///     Initializes a new instance of the <see cref="AnonymousEventListener{TMessage}" /> class.
         /// </summary>
         /// <param name="receiver">
-        /// The receiver.
+        ///     The receiver.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -33,17 +37,17 @@ namespace JKCore.Mediator.Events
                 throw new ArgumentNullException(nameof(receiver));
             }
 
-            this._receiver = receiver;
+            _receiver = receiver;
         }
 
         /// <summary>
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         public void Handle(TMessage message)
         {
-            this._receiver(message);
+            _receiver(message);
         }
     }
 }

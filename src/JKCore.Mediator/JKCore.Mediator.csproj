@@ -14,6 +14,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\JKCore.licenseheader" Link="JKCore.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\JKCore\JKCore.csproj" />
   </ItemGroup>
 

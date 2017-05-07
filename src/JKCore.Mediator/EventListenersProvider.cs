@@ -1,19 +1,19 @@
 ﻿// Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+#region
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using JKCore.Mediator.Events;
+using Microsoft.Extensions.DependencyInjection;
+
+#endregion
+
 namespace JKCore.Mediator
 {
     #region
-
-    using JKCore.Mediator.Commands;
-    using JKCore.Mediator.Events;
-    using JKCore.Mediator.Exceptions;
-    using Microsoft.Extensions.DependencyInjection;
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     #endregion
 
@@ -35,7 +35,7 @@ namespace JKCore.Mediator
         /// </param>
         public EventListenersProvider(IServiceProvider serviceProvider)
         {
-            this._serviceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -52,13 +52,13 @@ namespace JKCore.Mediator
             List<IEventListener<TMessage>> receivers;
             try
             {
-                receivers = this._serviceProvider.GetServices<IEventListener<TMessage>>().ToList();
+                receivers = _serviceProvider.GetServices<IEventListener<TMessage>>().ToList();
             }
             catch (Exception)
             {
                 receivers = new List<IEventListener<TMessage>>();
             }
-        
+
             return receivers;
         }
 
@@ -83,7 +83,7 @@ namespace JKCore.Mediator
             {
                 receivers = new List<IAsyncEventListener<TMessage>>();
             }
-            
+
             return receivers;
         }
     }

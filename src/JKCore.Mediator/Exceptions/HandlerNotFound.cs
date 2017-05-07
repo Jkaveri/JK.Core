@@ -1,11 +1,15 @@
 ﻿// Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+#region
+
+using System;
+
+#endregion
+
 namespace JKCore.Mediator.Exceptions
 {
     #region
-
-    using System;
 
     #endregion
 
@@ -22,7 +26,7 @@ namespace JKCore.Mediator.Exceptions
         public HandlerNotFound(Type cmdType)
             : base($"Handler for {cmdType.FullName} not found")
         {
-            this.CommandType = cmdType;
+            CommandType = cmdType;
         }
 
         /// <summary>

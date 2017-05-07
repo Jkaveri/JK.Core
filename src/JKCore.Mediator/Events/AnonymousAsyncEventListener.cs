@@ -1,12 +1,16 @@
 // Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+#region
+
+using System;
+using System.Threading.Tasks;
+
+#endregion
+
 namespace JKCore.Mediator.Events
 {
     #region
-
-    using System;
-    using System.Threading.Tasks;
 
     #endregion
 
@@ -20,10 +24,10 @@ namespace JKCore.Mediator.Events
         private Func<TMessage, Task> _receiver;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnonymousAsyncEventListener{TMessage}"/> class.
+        ///     Initializes a new instance of the <see cref="AnonymousAsyncEventListener{TMessage}" /> class.
         /// </summary>
         /// <param name="receiver">
-        /// The receiver.
+        ///     The receiver.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -34,19 +38,19 @@ namespace JKCore.Mediator.Events
                 throw new ArgumentNullException(nameof(receiver));
             }
 
-            this._receiver = receiver;
+            _receiver = receiver;
         }
 
         /// <summary>
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         /// <returns>
         /// </returns>
         public Task Handle(TMessage message)
         {
-            return this._receiver(message);
+            return _receiver(message);
         }
     }
 }

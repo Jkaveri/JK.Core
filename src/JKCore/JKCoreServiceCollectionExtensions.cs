@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
+using JKCore.Validators;
+using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace JKCore
 {
-    using JKCore.Validators;
-
-    using Microsoft.Extensions.DependencyInjection;
-
+    /// <summary>
+    ///     Extendsions
+    /// </summary>
     public static class JKCoreServiceCollectionExtensions
     {
         public static IServiceCollection AddJKCore(this IServiceCollection services)

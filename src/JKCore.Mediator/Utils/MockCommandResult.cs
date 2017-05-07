@@ -1,26 +1,31 @@
-﻿namespace JKCore.Mediator.Utils
+﻿// Copyright (c) Ho Nguyen. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+#region
+
+using System;
+
+#endregion
+
+namespace JKCore.Mediator.Utils
 {
-    using System;
-
-    using JKCore.Mediator.Commands;
-
     /// <summary>
-    /// A utils that help you create a command result in a test method.
+    ///     A utils that help you create a command result in a test method.
     /// </summary>
     public static class MockCommandResult
     {
         /// <summary>
-        /// Create failure result.
+        ///     Create failure result.
         /// </summary>
-        public static ICommandResult<TResult> Failure<TResult>()
+        public static IMediatorResult<TResult> Failure<TResult>()
         {
-            return new CommandResult<TResult>(false);
+            return new MediatorResult<TResult>(false);
         }
 
         /// <summary>
-        /// Create failure result with a message.
+        ///     Create failure result with a message.
         /// </summary>
-        public static ICommandResult<TResult> Failure<TResult>(string message)
+        public static IMediatorResult<TResult> Failure<TResult>(string message)
         {
             var result = Failure<TResult>();
             result.AddError(message);
@@ -28,9 +33,9 @@
         }
 
         /// <summary>
-        /// Create failure result with a message and an exception.
+        ///     Create failure result with a message and an exception.
         /// </summary>
-        public static ICommandResult<TResult> Failure<TResult>(string message, Exception exception)
+        public static IMediatorResult<TResult> Failure<TResult>(string message, Exception exception)
         {
             var result = Failure<TResult>();
             result.AddError(message, exception);
@@ -38,9 +43,9 @@
         }
 
         /// <summary>
-        /// Create failure result with an exception.
+        ///     Create failure result with an exception.
         /// </summary>
-        public static ICommandResult<TResult> Failure<TResult>(Exception exception)
+        public static IMediatorResult<TResult> Failure<TResult>(Exception exception)
         {
             var result = Failure<TResult>();
             result.AddError(exception);
@@ -48,19 +53,19 @@
         }
 
         /// <summary>
-        /// Create a success result.
+        ///     Create a success result.
         /// </summary>
-        public static ICommandResult<TResult> Success<TResult>(TResult result)
+        public static IMediatorResult<TResult> Success<TResult>(TResult result)
         {
-            return new CommandResult<TResult>(true, result);
+            return new MediatorResult<TResult>(true, result);
         }
 
         /// <summary>
-        /// Create success result.
+        ///     Create success result.
         /// </summary>
-        public static ICommandResult<TResult> Success<TResult>()
+        public static IMediatorResult<TResult> Success<TResult>()
         {
-            return new CommandResult<TResult>(true);
+            return new MediatorResult<TResult>(true);
         }
     }
 }

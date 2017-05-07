@@ -1,18 +1,16 @@
 ﻿// Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+#region
+
+using JKCore.Extensions;
+using JKCore.Mediator.Events;
+using Microsoft.Extensions.DependencyInjection;
+
+#endregion
+
 namespace JKCore.Mediator
 {
-    #region
-
-    using JKCore.Extensions;
-    using JKCore.Mediator.Commands;
-    using JKCore.Mediator.Events;
-    using JKCore.Mediator.Queries;
-    using Microsoft.Extensions.DependencyInjection;
-
-    #endregion
-
     /// <summary>
     /// </summary>
     public static class MediatorServiceCollectionExtensions
@@ -27,16 +25,15 @@ namespace JKCore.Mediator
         public static IServiceCollection AddMediator(this IServiceCollection services)
         {
             services.AddTransient<IMediator, Mediator>();
-            services.AddTransient<ICommandHandlerProvider, CommandHandlerProvider>();
+            services.AddTransient<IHandlerResolver, HandlerResolver>();
             services.AddTransient<IEventListenersProvider, EventListenersProvider>();
-            services.AddTransient<IQueryProcessorProvider, QueryProcessorResolver>();
             return services;
         }
 
         /// <summary>
         /// </summary>
         /// <param name="services">
-        /// The services.
+        ///     The services.
         /// </param>
         /// <typeparam name="T">
         /// </typeparam>
@@ -46,11 +43,11 @@ namespace JKCore.Mediator
         {
             services.Scan<T>(
                     collector =>
-                        {
-                            // get all services that are implementation of theses types
-                            var types = new[] { typeof(ICommandHandler), typeof(IEventListener), typeof(IQueryProcessor) };
-                            collector.ImplementationOf(types);
-                        })
+                    {
+                        // get all services that are implementation of theses types
+                        var types = new[] {typeof(IMediatorHandler), typeof(IEventListener)};
+                        collector.ImplementationOf(types);
+                    })
                 .ByImplementedInterfaces();
             return services;
         }
