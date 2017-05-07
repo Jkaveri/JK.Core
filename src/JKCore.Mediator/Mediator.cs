@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using JKCore.Mediator.Events;
+using JKCore.Utilities;
 
 #endregion
 
@@ -20,96 +20,47 @@ namespace JKCore.Mediator
     public class Mediator : IMediator
     {
         private readonly IHandlerResolver _handlerResolver;
-        private readonly IEventListenersProvider _listenersProvider;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Mediator" /> class.
         /// </summary>
-        public Mediator(IHandlerResolver handlerResolver, IEventListenersProvider listenersProvider)
+        public Mediator(IHandlerResolver handlerResolver)
         {
             _handlerResolver = handlerResolver ?? throw new ArgumentNullException(nameof(handlerResolver));
-            _listenersProvider = listenersProvider ?? throw new ArgumentNullException(nameof(listenersProvider));
-        }
-
-        /// <summary>
-        ///     Publish event async.
-        /// </summary>
-        public Task PublishAsync<TMessage>(TMessage message,
-            CancellationToken cancellationToken = default(CancellationToken)) where TMessage : IAsyncEvent
-        {
-            var receivers = _listenersProvider.ResolveAsyncListeners<TMessage>();
-            var asyncEventListeners = receivers as IList<IAsyncEventListener<TMessage>> ?? receivers.ToList();
-            if (asyncEventListeners.Any())
-            {
-                return Task.WhenAll(asyncEventListeners.Select(t => t.Handle(message)));
-            }
-
-            return Task.Delay(0, cancellationToken);
         }
 
         /// <summary>
         ///     Send command async.
         /// </summary>
-        public Task<IMediatorResult<TResult>> SendAsync<TResult>(IMessage<TResult> command,
+        public Task<IMediatorResult<TResult>> Send<TResult>(IMessage<TResult> message,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var commandType = command.GetType();
-            var method = _handlerResolver.GetType()
-                .GetMethods()
-                .Where(t =>
-                {
-                    if (t.Name == "ResolveHandler")
-                    {
-                        var args = t.GetGenericArguments();
-                        return args.Length == 2;
-                    }
-                    return false;
-                })
-                .First()
-                .MakeGenericMethod(commandType, typeof(TResult));
+            Check.ArgNotNull(message, nameof(message));
 
-            var handler = method.Invoke(_handlerResolver, null);
+            object handler = _handlerResolver.Resolve(message.GetType());
 
-            if (handler != null)
-            {
-                method = handler.GetType().GetMethod("Process");
-                return (Task<IMediatorResult<TResult>>) method.Invoke(handler,
-                    new object[] {command, cancellationToken});
-            }
+            if (handler == null) throw new InvalidOperationException("Handler not found");
 
-            throw new InvalidOperationException("Handler not found");
+            var method = handler.GetType().GetMethod("Process");
+
+            return (Task<IMediatorResult<TResult>>) method.Invoke(handler,
+                new object[] {message, cancellationToken});
         }
 
         /// <summary>
         ///     Send a command.
         /// </summary>
-        public Task<IMediatorResult> SendAsync(IMessage command,
+        public Task<IMediatorResult> Send(IMessage message,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var commandType = command.GetType();
-            var method = _handlerResolver.GetType()
-                .GetMethods()
-                .Where(t =>
-                {
-                    if (t.Name == "ResolveHandler")
-                    {
-                        var args = t.GetGenericArguments();
-                        return args.Length == 1;
-                    }
-                    return false;
-                })
-                .First()
-                .MakeGenericMethod(commandType);
+            Check.ArgNotNull(message, nameof(message));
 
-            var handler = method.Invoke(_handlerResolver, null);
+            var handler = _handlerResolver.Resolve(message.GetType());
 
-            if (handler != null)
-            {
-                method = handler.GetType().GetMethod("Process");
-                return (Task<IMediatorResult>) method.Invoke(handler, new object[] {command, cancellationToken});
-            }
+            if (handler == null) throw new InvalidOperationException("Handler not found");
 
-            throw new InvalidOperationException("Handler not found");
+            var method = handler.GetType().GetMethod("Process");
+            return (Task<IMediatorResult>) method.Invoke(handler, new object[] {message, cancellationToken});
         }
     }
 }

@@ -12,7 +12,7 @@ namespace JKCore.Mediator.Utils
     /// <summary>
     ///     A utils that help you create a command result in a test method.
     /// </summary>
-    public static class MockCommandResult
+    public static class MockMediatorResult
     {
         /// <summary>
         ///     Create failure result.

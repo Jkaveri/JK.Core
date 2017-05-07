@@ -5,7 +5,6 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using JKCore.Mediator.Events;
 
 #endregion
 
@@ -20,21 +19,15 @@ namespace JKCore.Mediator
     public interface IMediator
     {
         /// <summary>
-        ///     Publish envent async.
-        /// </summary>
-        Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default(CancellationToken))
-            where TMessage : IAsyncEvent;
-
-        /// <summary>
         ///     Sends command asynchronous.
         /// </summary>
-        Task<IMediatorResult<TResult>> SendAsync<TResult>(IMessage<TResult> command,
+        Task<IMediatorResult<TResult>> Send<TResult>(IMessage<TResult> message,
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         ///     Sends command asynchronous.
         /// </summary>
-        Task<IMediatorResult> SendAsync(IMessage command,
+        Task<IMediatorResult> Send(IMessage message,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

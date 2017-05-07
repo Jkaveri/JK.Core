@@ -1,4 +1,6 @@
-﻿namespace JKCore.Extensions
+﻿using System.Collections.Generic;
+
+namespace JKCore.Extensions
 {
     #region
 

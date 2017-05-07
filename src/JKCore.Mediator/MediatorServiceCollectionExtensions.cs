@@ -3,9 +3,11 @@
 
 #region
 
-using JKCore.Extensions;
-using JKCore.Mediator.Events;
+using System.Linq;
+using System.Reflection;
+using JKCore.Utilities;
 using Microsoft.Extensions.DependencyInjection;
+using static JKCore.Utilities.ReflectionUtils;
 
 #endregion
 
@@ -24,9 +26,8 @@ namespace JKCore.Mediator
         /// </returns>
         public static IServiceCollection AddMediator(this IServiceCollection services)
         {
-            services.AddTransient<IMediator, Mediator>();
-            services.AddTransient<IHandlerResolver, HandlerResolver>();
-            services.AddTransient<IEventListenersProvider, EventListenersProvider>();
+            services.AddSingleton<IMediator, Mediator>();
+            services.AddSingleton<IHandlerResolver>((sp) => new HandlerResolver(sp));
             return services;
         }
 
@@ -41,14 +42,23 @@ namespace JKCore.Mediator
         /// </returns>
         public static IServiceCollection AddMediatorTypesInAssemblyOf<T>(this IServiceCollection services)
         {
-            services.Scan<T>(
-                    collector =>
-                    {
-                        // get all services that are implementation of theses types
-                        var types = new[] {typeof(IMediatorHandler), typeof(IEventListener)};
-                        collector.ImplementationOf(types);
-                    })
-                .ByImplementedInterfaces();
+            var result = TypeCollector.Scan<T>()
+                .Types
+                .Where(type => IsAssignAbleTo(type, typeof(IMediatorHandler)));
+
+            foreach (var type in result)
+            {
+                // Add it selft
+                services.Add(new ServiceDescriptor(type, type, ServiceLifetime.Transient));
+
+                // Implemented interface
+                foreach (var @interface in type.GetTypeInfo().ImplementedInterfaces)
+                {
+                    var descriptor = new ServiceDescriptor(@interface, type, ServiceLifetime.Transient);
+                    services.Add(descriptor);
+                }
+            }
+
             return services;
         }
     }

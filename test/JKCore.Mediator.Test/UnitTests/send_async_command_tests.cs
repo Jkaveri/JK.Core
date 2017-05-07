@@ -29,7 +29,7 @@ namespace JKCore.Mediator.Test.UnitTests
             var command = new ExpectedResultMessage {ExpectedResult = "Henry"};
 
             // Actions
-            var result = await _mediator.SendAsync(command);
+            var result = await _mediator.Send(command);
 
             // Assertions
             result.Successful.Should().BeTrue();
@@ -47,7 +47,7 @@ namespace JKCore.Mediator.Test.UnitTests
             };
 
             // Actions
-            var result = await _mediator.SendAsync(command);
+            var result = await _mediator.Send(command);
 
             // Assertions
             result.Successful.Should().BeTrue();

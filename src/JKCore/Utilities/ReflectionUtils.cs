@@ -1,14 +1,18 @@
 ﻿// Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+#region
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+#endregion
+
 namespace JKCore.Utilities
 {
     #region
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
 
     #endregion
 
@@ -28,12 +32,7 @@ namespace JKCore.Utilities
         /// </returns>
         public static IEnumerable<Type> AllTypesInAssemblyOf(Type type)
         {
-            var types = type.GetTypeInfo().Assembly.GetTypes();
-
-            foreach (var t in types)
-            {
-                yield return t;
-            }
+            return GetAssembly(type).GetTypes();
         }
 
         /// <summary>
@@ -82,10 +81,10 @@ namespace JKCore.Utilities
         /// <summary>
         /// </summary>
         /// <param name="childType">
-        /// The child type.
+        ///     The child type.
         /// </param>
         /// <param name="parentType">
-        /// The parent type.
+        ///     The parent type.
         /// </param>
         /// <returns>
         /// </returns>
@@ -140,6 +139,16 @@ namespace JKCore.Utilities
             return
                 properties.Select(
                     t => new KeyValuePair<string, string>(t.Name, t.GetGetMethod().Invoke(data, null)?.ToString()));
+        }
+
+        public static Assembly GetAssembly<T>()
+        {
+            return GetAssembly(typeof(T));
+        }
+
+        public static Assembly GetAssembly(Type type)
+        {
+            return type.GetTypeInfo().Assembly;
         }
     }
 }
