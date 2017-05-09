@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using JKCore.Mediator.Abstracts;
 using JKCore.Mediator.Test.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +17,10 @@ namespace JKCore.Mediator.Test.Shared
         public MediatorFixture()
         {
             _services = new ServiceCollection();
-            _services.AddMediator().AddMediatorTypesInAssemblyOf<ExpectedResultAsyncCommandHandler>();
+
+            _services.AddMediator()
+                .AddHandlersSameAssemblyWith<ExpectedHandler>();
+
             _serviceProvider = _services.BuildServiceProvider();
         }
 

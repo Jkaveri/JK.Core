@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
 
   <PropertyGroup>
-    <VersionPrefix>1.0.1</VersionPrefix>
-    <VersionSufix>dev</VersionSufix>
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>JKCore.MessageBus</AssemblyName>
     <PackageId>JKCore.MessageBus</PackageId>
@@ -12,5 +11,9 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\JKCore.licenseheader" Link="JKCore.licenseheader" />
+  </ItemGroup>
 
 </Project>

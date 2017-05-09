@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using JKCore.Mediator.Abstracts;
@@ -9,13 +10,12 @@ using JKCore.Mediator.Test.Messages;
 
 namespace JKCore.Mediator.Test.Handlers
 {
-    public class VoidAsyncCommandHandler : MediatorHandler<FakeMessage, bool>
+    public class QueryHandler : MediatorHandler<QueryMessage, int>
     {
-        public override Task<IMediatorResult<bool>> Process(FakeMessage message,
+        public override Task<IMediatorResult<int>> Process(QueryMessage message,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            message.Action?.Invoke();
-            return Task.FromResult(Success());
+            return Task.FromResult(Success(message.ExpectedInt));
         }
     }
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
+using JKCore.Mediator.Abstracts;
 using JKCore.Mediator.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,9 +27,6 @@ namespace JKCore.Mediator
         /// </summary>
         private readonly IServiceProvider _serviceProvider;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="EventListenersProvider" /> class.
-        /// </summary>
         public HandlerResolver(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -41,20 +39,6 @@ namespace JKCore.Mediator
             where TMessage : IMessage<TResult>
         {
             var handler = _serviceProvider.GetService<IMediatorHandler<TMessage, TResult>>();
-            if (handler == null)
-            {
-                throw new HandlerNotFound(typeof(TMessage));
-            }
-
-            return handler;
-        }
-
-        /// <summary>
-        ///     Resolve async command handler.
-        /// </summary>
-        public IMediatorHandler<TMessage> ResolveHandler<TMessage>() where TMessage : IMessage
-        {
-            var handler = _serviceProvider.GetService<IMediatorHandler<TMessage>>();
             if (handler == null)
             {
                 throw new HandlerNotFound(typeof(TMessage));
@@ -82,32 +66,54 @@ namespace JKCore.Mediator
 
         private Type BuildHandlerType(Type messageType)
         {
-            var typeInfo = messageType.GetTypeInfo();
+            var realTypes = GetRealMessageTypes(messageType);
 
-            var interfaceType =
-                typeInfo.ImplementedInterfaces.FirstOrDefault(
-                    t => typeof(IMessage<>).IsAssignableFrom(t) || typeof(IMessage).IsAssignableFrom(t));
-
-            if (interfaceType == null)
+            if (realTypes == null)
             {
-                throw new InvalidOperationException("Invalid message");
+                throw new InvalidOperationException("Invalid message type");
             }
+
+            // Make generic IMediatorHandler<TMessage, TResult>
+            return typeof(IMediatorHandler<,>).MakeGenericType(realTypes.Item1, realTypes.Item2);
+        }
+
+        /// <summary>
+        ///     Get real message type and result type.
+        ///     Item1 = Message Type, Item2 = result type.
+        /// </summary>
+        private Tuple<Type, Type> GetRealMessageTypes(Type sourceType)
+        {
+            var messageType = sourceType;
+            var iMessageType = typeof(IMessage);
+            var typeInfo = messageType.GetTypeInfo();
+            var interfaces =
+                typeInfo.ImplementedInterfaces.Where(t => t != iMessageType && iMessageType.IsAssignableFrom(t));
 
             Type resultType = null;
-            if (interfaceType.GetTypeInfo().GenericTypeArguments.Length > 0)
+            var found = false;
+
+            foreach (var @interface in interfaces)
             {
-                resultType = interfaceType.GetTypeInfo().GenericTypeArguments[0];
+                if (@interface.IsConstructedGenericType)
+                {
+                    var genericType = @interface.GetGenericTypeDefinition();
+                    if (genericType == typeof(IQuery<>) || genericType == typeof(IMessage<>))
+                    {
+                        found = true;
+                        resultType = @interface.GenericTypeArguments[0];
+                    }
+                }
+                else if (iMessageType.IsAssignableFrom(@interface))
+                {
+                    messageType = @interface;
+                }
+            }
+            if (found)
+            {
+                return new Tuple<Type, Type>(messageType, resultType);
             }
 
-            var type = resultType != null
-
-                // Make generic IMediatorHandler<TMessage, TResult>
-                ? typeof(IMediatorHandler<,>).MakeGenericType(messageType, resultType)
-
-                // Make generic IMediatorHandler<TMessage>
-                : typeof(IMediatorHandler<>).MakeGenericType(messageType);
-
-            return type;
+            return null;
         }
     }
 }

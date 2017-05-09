@@ -34,6 +34,6 @@ namespace JKCore.MessageBus
         /// </typeparam>
         /// <returns>
         /// </returns>
-        Task Publish<T>(object msg);
+        Task Publish<T>(T msg);
     }
 }

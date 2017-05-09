@@ -2,6 +2,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using JKCore.Mediator.Abstracts;
 
 #endregion
 
@@ -10,24 +11,14 @@ namespace JKCore.Mediator
     /// <summary>
     ///     Async command handler.
     /// </summary>
-    public abstract class MediatorHandler<TMessage, TResult> : CommandResultFactory<TResult>,
+    public abstract class MediatorHandler<TMessage, TResult> : MediatorResultFactory<TResult>,
         IMediatorHandler<TMessage, TResult>
         where TMessage : IMessage<TResult>
     {
         /// <summary>
         ///     Handle command asynchronously.
         /// </summary>
-        public abstract Task<IMediatorResult<TResult>> Process(TMessage command,
+        public abstract Task<IMediatorResult<TResult>> Process(TMessage message,
             CancellationToken cancellationToken = default(CancellationToken));
-    }
-
-    /// <summary>
-    ///     Mediator handler abstract class.
-    /// </summary>
-    public abstract class MediatorHandler<TCommand> : CommandResultFactory, IMediatorHandler<TCommand>
-        where TCommand : IMessage
-    {
-        public abstract Task<IMediatorResult> Process(TCommand message,
-            CancellationToken cancellationToken = new CancellationToken());
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace JKCore.Mediator
+namespace JKCore.Mediator.Abstracts
 {
     #region
 
@@ -22,12 +22,6 @@ namespace JKCore.Mediator
         ///     Sends command asynchronous.
         /// </summary>
         Task<IMediatorResult<TResult>> Send<TResult>(IMessage<TResult> message,
-            CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        ///     Sends command asynchronous.
-        /// </summary>
-        Task<IMediatorResult> Send(IMessage message,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

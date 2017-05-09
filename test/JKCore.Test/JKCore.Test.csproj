@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <Import Project="../../common.props" />
 
   <PropertyGroup>
-    <VersionPrefix>1.0.1</VersionPrefix>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <AssemblyName>JKCore.Test</AssemblyName>
     <OutputType>Exe</OutputType>

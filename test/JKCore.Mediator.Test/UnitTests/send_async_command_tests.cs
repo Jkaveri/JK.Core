@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using FluentAssertions;
+using JKCore.Mediator.Abstracts;
 using JKCore.Mediator.Test.Messages;
 using JKCore.Mediator.Test.Shared;
 using Xunit;
@@ -14,11 +15,8 @@ namespace JKCore.Mediator.Test.UnitTests
     {
         public send_async_command_tests(MediatorFixture mediatorFixture)
         {
-            _fixture = mediatorFixture;
-            _mediator = _fixture.Mediator;
+            _mediator = mediatorFixture.Mediator;
         }
-
-        private readonly MediatorFixture _fixture;
 
         private readonly IMediator _mediator;
 
@@ -35,6 +33,24 @@ namespace JKCore.Mediator.Test.UnitTests
             result.Successful.Should().BeTrue();
             result.Data.Should().Be(command.ExpectedResult);
             result.Errors.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task send_command_interface_should_success()
+        {
+            // arrange
+            string expected = "henry";
+            var command = new ExpectedMessage
+            {
+                Expected = expected
+            };
+
+            // Actions
+            var result = await _mediator.Send(command);
+
+            // Assertions
+            result.Successful.Should().BeTrue();
+            result.Data.Should().Be(expected);
         }
 
         [Fact]
@@ -55,4 +71,6 @@ namespace JKCore.Mediator.Test.UnitTests
             result.Errors.Should().BeEmpty();
         }
     }
+
+
 }

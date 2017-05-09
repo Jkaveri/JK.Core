@@ -3,7 +3,7 @@
 
 using System;
 
-namespace JKCore.Mediator
+namespace JKCore.Mediator.Abstracts
 {
     /// <summary>
     /// </summary>
@@ -13,11 +13,6 @@ namespace JKCore.Mediator
         /// </summary>
         IMediatorHandler<TMessage, TResult> ResolveHandler<TMessage, TResult>()
             where TMessage : IMessage<TResult>;
-
-        /// <summary>
-        ///     Resolve async command handler
-        /// </summary>
-        IMediatorHandler<TMessage> ResolveHandler<TMessage>() where TMessage : IMessage;
 
         object Resolve(Type messageType);
     }

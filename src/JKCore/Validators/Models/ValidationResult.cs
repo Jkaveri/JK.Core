@@ -70,21 +70,14 @@ namespace JKCore.Validators.Models
         /// <param name="args">The arguments to build exception. <typeparamref name="TException" /></param>
         /// <exception cref="ValidationException">
         /// </exception>
-        public void ThrowExceptionIfNotValid<TException>(params object[] args) where TException : Exception
+        public void ThrowExceptionIfNotValid<TException>() where TException : Exception
         {
             if (this.IsValid)
             {
                 return;
             }
 
-            var msg = this.ToString();
-            if (args != null)
-            {
-                var innerException = (TException)Activator.CreateInstance(typeof(TException), args);
-                throw new ValidationException(msg, innerException);
-            }
-
-            throw new ValidationException(msg, Activator.CreateInstance<TException>());
+            throw  (TException) Activator.CreateInstance(typeof(TException), ToString());
         }
 
         /// <summary>Returns a string that represents the current object.</summary>

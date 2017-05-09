@@ -80,7 +80,7 @@ namespace JKCore.MessageBus.RabbitMQ
         /// </typeparam>
         /// <returns>
         /// </returns>
-        public Task Publish<T>(object msg)
+        public Task Publish<T>(T msg)
         {
             var type = typeof(T);
             var name = type.FullName;

@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="../../common.props" />
   <PropertyGroup>
-    <Copyright>Copyright (c) Henry. All right reversed</Copyright>
     <AssemblyTitle>JK.Core</AssemblyTitle>
-    <VersionPrefix>1.0.1</VersionPrefix>
     <TargetFramework>netstandard1.6</TargetFramework>
     <DebugType>portable</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -14,6 +13,9 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\JKCore.licenseheader" Link="JKCore.licenseheader" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />

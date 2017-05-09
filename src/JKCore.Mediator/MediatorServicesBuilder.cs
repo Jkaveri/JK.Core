@@ -1,7 +1,9 @@
 ﻿#region
 
+using System;
 using System.Linq;
 using System.Reflection;
+using JKCore.Mediator.Abstracts;
 using Microsoft.Extensions.DependencyInjection;
 using static JKCore.Utilities.ReflectionUtils;
 
@@ -18,8 +20,15 @@ namespace JKCore.Mediator
             _services = services;
         }
 
-        public MediatorServicesBuilder AddFilter<TMessage, TValidator>()
+        public MediatorServicesBuilder AddFilter<TFilter>() where TFilter : MediatorFilter
         {
+            _services.AddTransient<MediatorFilter, TFilter>();
+            return this;
+        }
+
+        public MediatorServicesBuilder AddFilter<TFilter>(Func<IServiceProvider, TFilter> factory) where TFilter : MediatorFilter
+        {
+            _services.AddTransient<MediatorFilter, TFilter>(factory);
             return this;
         }
 

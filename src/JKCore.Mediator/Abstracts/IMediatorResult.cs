@@ -7,24 +7,18 @@ using JKCore.Models;
 
 #endregion
 
-namespace JKCore.Mediator
+namespace JKCore.Mediator.Abstracts
 {
     /// <summary>
-    /// Message resul
+    ///     Message resul
     /// </summary>
-    public interface IMediatorResult<out TData> : IMediatorResult
+    public interface IMediatorResult<out TData> : IErrorItemContainer
     {
         /// <summary>
         ///     Gets the result.
         /// </summary>
         TData Data { get; }
-    }
 
-    /// <summary>
-    ///     ICommand Result with no return data.
-    /// </summary>
-    public interface IMediatorResult : IErrorItemContainer
-    {
         /// <summary>
         ///     Gets a value indicating whether succeed.
         /// </summary>

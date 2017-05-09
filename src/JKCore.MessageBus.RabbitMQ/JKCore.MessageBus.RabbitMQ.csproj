@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
 
   <PropertyGroup>
-    <VersionPrefix>1.0.1</VersionPrefix>
-    <VersionSufix>dev</VersionSufix>
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>JKCore.MessageBus.RabbitMQ</AssemblyName>
     <PackageId>JKCore.MessageBus.RabbitMQ</PackageId>
@@ -12,6 +11,10 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\JKCore.licenseheader" Link="JKCore.licenseheader" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\JKCore.MessageBus\JKCore.MessageBus.csproj" />

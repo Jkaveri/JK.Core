@@ -1,4 +1,6 @@
-﻿namespace JKCore.Mediator.Test.Messages
+﻿using JKCore.Mediator.Abstracts;
+
+namespace JKCore.Mediator.Test.Messages
 {
     public class ExpectedResultMessage : IMessage<object>
     {

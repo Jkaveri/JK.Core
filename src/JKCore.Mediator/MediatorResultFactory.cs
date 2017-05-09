@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using JKCore.Mediator.Abstracts;
 using JKCore.Models;
 
 #endregion
@@ -13,7 +14,7 @@ namespace JKCore.Mediator
 {
     /// <summary>
     /// </summary>
-    public abstract class CommandResultFactory<TResult>
+    public abstract class MediatorResultFactory<TResult>
     {
         /// <summary>
         ///     Fail result.
@@ -36,7 +37,7 @@ namespace JKCore.Mediator
         /// </summary>
         protected IMediatorResult<TResult> Failure(TResult data, IEnumerable<ErrorItem> errors)
         {
-            var result = Failure(data);
+            IMediatorResult<TResult> result = Failure(data);
 
             result.AddErrors(errors);
 
@@ -135,72 +136,4 @@ namespace JKCore.Mediator
         }
     }
 
-
-    /// <summary>
-    /// </summary>
-    public abstract class CommandResultFactory
-    {
-        /// <summary>
-        /// </summary>
-        /// <returns>
-        /// </returns>
-        protected IMediatorResult Failure()
-        {
-            return new MediatorResult(false);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="message">
-        ///     The message.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        protected IMediatorResult Failure(string message)
-        {
-            var result = Failure();
-            result.AddError(message);
-            return result;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="message">
-        ///     The message.
-        /// </param>
-        /// <param name="exception">
-        ///     The exception.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        protected IMediatorResult Failure(string message, Exception exception)
-        {
-            var result = Failure();
-            result.AddError(message, exception);
-            return result;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="exception">
-        ///     The exception.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        protected IMediatorResult Failure(Exception exception)
-        {
-            var result = Failure();
-            result.AddError(exception);
-            return result;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns>
-        /// </returns>
-        protected IMediatorResult Success()
-        {
-            return new MediatorResult(true);
-        }
-    }
 }

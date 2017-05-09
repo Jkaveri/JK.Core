@@ -4,6 +4,7 @@
 #region
 
 using System;
+using JKCore.Mediator.Abstracts;
 
 #endregion
 

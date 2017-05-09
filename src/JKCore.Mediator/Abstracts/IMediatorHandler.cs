@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace JKCore.Mediator
+namespace JKCore.Mediator.Abstracts
 {
     /// <summary>
     ///     Handle message and return result.
@@ -16,20 +16,13 @@ namespace JKCore.Mediator
     public interface IMediatorHandler<in TMessage, TResult> : IMediatorHandler where TMessage : IMessage<TResult>
     {
         /// <summary>
-        /// Processor message and return result
+        ///     Processor message and return result
         /// </summary>
         Task<IMediatorResult<TResult>> Process(TMessage message,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 
-    /// <summary>
-    ///     Handle message and return results.
-    /// </summary>
-    public interface IMediatorHandler<in TMessage> : IMediatorHandler where TMessage : IMessage
+    public interface IMediatorHandler
     {
-        Task<IMediatorResult> Process(TMessage message,
-            CancellationToken cancellationToken = default(CancellationToken));
     }
-
-    public interface IMediatorHandler { }
 }

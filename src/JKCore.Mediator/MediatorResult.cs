@@ -3,6 +3,8 @@
 
 #region
 
+using System.Collections.Generic;
+using JKCore.Mediator.Abstracts;
 using JKCore.Models;
 
 #endregion
@@ -16,54 +18,32 @@ namespace JKCore.Mediator
         /// <summary>
         ///     Initializes a new instance of the <see cref="MediatorResult{TResult}" /> class.
         /// </summary>
-        /// <param name="succeed">
-        ///     The succeed.
-        /// </param>
-        public MediatorResult(bool succeed)
-            : this(succeed, default(TResult))
+        public MediatorResult(bool successful)
+            : this(successful, default(TResult))
         {
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MediatorResult{TResult}" /> class.
         /// </summary>
-        /// <param name="succeed">
-        ///     The succeed.
-        /// </param>
-        /// <param name="result">
-        ///     The result.
-        /// </param>
-        public MediatorResult(bool succeed, TResult result)
+        public MediatorResult(bool successful, TResult result) : this(successful, result, null)
         {
-            Successful = succeed;
+        }
+
+        /// <summary>
+        ///     Construct mediator result
+        /// </summary>
+        public MediatorResult(bool successful, TResult result, IEnumerable<ErrorItem> errors)
+        {
+            Successful = successful;
             Data = result;
+            AddErrors(errors);
         }
 
         /// <summary>
         ///     Gets the result.
         /// </summary>
         public TResult Data { get; }
-
-        /// <summary>
-        ///     Gets a value indicating whether succeed.
-        /// </summary>
-        public bool Successful { get; }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class MediatorResult : ErroritemContainer, IMediatorResult
-    {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="MediatorResult{TResult}" /> class.
-        /// </summary>
-        /// <param name="succeed">
-        ///     The succeed.
-        /// </param>
-        public MediatorResult(bool succeed)
-        {
-            Successful = succeed;
-        }
 
         /// <summary>
         ///     Gets a value indicating whether succeed.
