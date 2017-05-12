@@ -12,7 +12,7 @@ namespace JKCore.Mediator.Abstracts
     {
         public abstract Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(
             TMessage message,
-            Func<TMessage, CancellationToken, Task<IMediatorResult<TResult>>> next,
+            MediatorPipeLineDelegate<TResult> next,
             CancellationToken cancellationToken = default(CancellationToken)) where TMessage : IMessage<TResult>;
     }
 }

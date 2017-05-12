@@ -21,13 +21,14 @@ namespace JKCore.Mediator
         }
 
         public Task<IMediatorResult<TResult>> ApplyFilters<TMessage, TResult>(
-            IMediatorHandler<TMessage, TResult> handler, TMessage message, CancellationToken cancellationToken = default(CancellationToken)) where TMessage : IMessage<TResult>
+            IMediatorHandler<TMessage, TResult> handler, TMessage message, 
+            CancellationToken cancellationToken = default(CancellationToken)) where TMessage : IMessage<TResult>
         {
             var type = typeof(IEnumerable<>).MakeGenericType(typeof(MediatorFilter));
 
              var filters = ((IEnumerable<MediatorFilter>) _serviceProvider.GetService(type)).Reverse();
 
-            Func<TMessage, CancellationToken, Task<IMediatorResult<TResult>>> next = (msg, token) => handler.Process(message, token);
+            MediatorPipeLineDelegate<TResult> next = (msg, token) => handler.Process(message, token);
 
             foreach (MediatorFilter filter in filters)
             {

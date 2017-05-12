@@ -11,6 +11,10 @@ using JKCore.Validators;
 
 namespace JKCore.Mediator
 {
+    /// <summary>
+    /// Annotation validator filter.
+    /// Validate message before pass-in to handler.
+    /// </summary>
     public class AnnotationValidatorFilter : MediatorFilter
     {
         private readonly AnnotationsValidator _validator;
@@ -20,10 +24,9 @@ namespace JKCore.Mediator
             _validator = validator;
         }
 
-        public override Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(TMessage message, Func<TMessage, CancellationToken, Task<IMediatorResult<TResult>>> next,
+        public override Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(TMessage message, MediatorPipeLineDelegate<TResult> next,
             CancellationToken cancellationToken = new CancellationToken())
         {
-
             var result = _validator.Validate(message);
 
             result.ThrowExceptionIfNotValid<MediatorFilterException>();

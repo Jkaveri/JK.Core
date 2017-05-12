@@ -38,13 +38,14 @@ namespace JKCore.Mediator
         public IMediatorHandler<TMessage, TResult> ResolveHandler<TMessage, TResult>()
             where TMessage : IMessage<TResult>
         {
-            var handler = _serviceProvider.GetService<IMediatorHandler<TMessage, TResult>>();
+            var handler = Resolve(typeof(TMessage));
+
             if (handler == null)
             {
                 throw new HandlerNotFound(typeof(TMessage));
             }
 
-            return handler;
+            return (IMediatorHandler<TMessage, TResult>) handler;
         }
 
         public object Resolve(Type messageType)

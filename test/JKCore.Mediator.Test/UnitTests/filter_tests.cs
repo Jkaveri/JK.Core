@@ -101,7 +101,7 @@ namespace JKCore.Mediator.Test.UnitTests
                 _containers = containers;
             }
 
-            public override Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(TMessage message, Func<TMessage, CancellationToken, Task<IMediatorResult<TResult>>> next, CancellationToken cancellationToken = default(CancellationToken))
+            public override Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(TMessage message, MediatorPipeLineDelegate<TResult> next, CancellationToken cancellationToken = default(CancellationToken))
             {
                 _containers.Enqueue(1);
                 return next(message, cancellationToken);
@@ -117,7 +117,7 @@ namespace JKCore.Mediator.Test.UnitTests
                 _containers = containers;
             }
 
-            public override Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(TMessage message, Func<TMessage, CancellationToken, Task<IMediatorResult<TResult>>> next, CancellationToken cancellationToken = default(CancellationToken))
+            public override Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(TMessage message, MediatorPipeLineDelegate<TResult> next, CancellationToken cancellationToken = default(CancellationToken))
             {
                 _containers.Enqueue(2);
                 return next(message, cancellationToken);
@@ -126,7 +126,7 @@ namespace JKCore.Mediator.Test.UnitTests
 
         private class Filter3 : MediatorFilter
         {
-            public override async Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(TMessage message, Func<TMessage, CancellationToken, Task<IMediatorResult<TResult>>> next,
+            public override async Task<IMediatorResult<TResult>> Apply<TMessage, TResult>(TMessage message, MediatorPipeLineDelegate<TResult> next,
                 CancellationToken cancellationToken = new CancellationToken())
             {
                 var realMsg = message as TestFilterMessage;

@@ -9,11 +9,8 @@ using System;
 
 namespace JKCore.Mediator.Exceptions
 {
-    #region
-
-    #endregion
-
     /// <summary>
+    /// Exception when handler not found.
     /// </summary>
     public class HandlerNotFound : Exception
     {

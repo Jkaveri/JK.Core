@@ -11,10 +11,10 @@ namespace JKCore.Mediator.Test.Handlers
 {
     public class ExpectedHandler : MediatorHandler<ExpectedResultMessage, object>
     {
-        public override Task<IMediatorResult<object>> Process(ExpectedResultMessage command,
+        public override Task<IMediatorResult<object>> Process(ExpectedResultMessage message,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return Task.FromResult(Success(command.ExpectedResult));
+            return Task.FromResult(Success(message.ExpectedResult));
         }
     }
 

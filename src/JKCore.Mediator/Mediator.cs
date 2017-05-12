@@ -4,10 +4,11 @@
 #region
 
 using System;
-using System.Reflection;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using JKCore.Mediator.Abstracts;
+using JKCore.Mediator.Internal;
 using JKCore.Utilities;
 
 #endregion
@@ -18,9 +19,9 @@ namespace JKCore.Mediator
     /// </summary>
     public class Mediator : IMediator
     {
+        private static readonly ConcurrentDictionary<Type, object> _handlers = new ConcurrentDictionary<Type, object>();
         private readonly FilterManager _filterManager;
         private readonly IHandlerResolver _handlerResolver;
-        private MethodInfo _cachedMethodInfo;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Mediator" /> class.
@@ -34,21 +35,18 @@ namespace JKCore.Mediator
         /// <summary>
         ///     Send command async.
         /// </summary>
-        public async Task<IMediatorResult<TResult>> Send<TResult>(IMessage<TResult> message,
+        public Task<IMediatorResult<TResult>> Send<TResult>(IMessage<TResult> message,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             Check.ArgNotNull(message, nameof(message));
 
-            var handler = _handlerResolver.Resolve(message.GetType());
+            var msgType = message.GetType();
+            var implement =
+                (MediatorHandlerImpl<TResult>) _handlers.GetOrAdd(msgType,
+                    (key) => Activator.CreateInstance(
+                        typeof(MediatorHandlerImpl<,>).MakeGenericType(key, typeof(TResult))));
 
-            if (handler == null) throw new InvalidOperationException("Handler not found");
-
-            var messageType = message.GetType();
-            var resultType = typeof(TResult);
-
-            var methodInfo = _filterManager.GetType().GetMethod("ApplyFilters");
-            return await (Task<IMediatorResult<TResult>>) methodInfo.MakeGenericMethod(messageType, resultType)
-                .Invoke(_filterManager, new[] {handler, message, cancellationToken});
+            return implement.Handle(message, _handlerResolver, _filterManager, cancellationToken);
         }
     }
 }
