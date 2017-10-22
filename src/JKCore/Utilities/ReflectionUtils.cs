@@ -1,14 +1,18 @@
 ﻿// Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+#region
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+#endregion
+
 namespace JKCore.Utilities
 {
     #region
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
 
     #endregion
 
@@ -17,6 +21,31 @@ namespace JKCore.Utilities
     /// </summary>
     public static class ReflectionUtils
     {
+        /// <summary>
+        ///     Scan assembly of <see cref="Type" />
+        /// </summary>
+        /// <param name="type">
+        ///     The type.
+        /// </param>
+        /// <returns>
+        ///     Collection of type in assembly
+        /// </returns>
+        public static IEnumerable<Type> AllTypesInAssemblyOf(Type type)
+        {
+            return GetAssembly(type).GetTypes();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IEnumerable<Type> AllTypesInAssemblyOf<T>()
+        {
+            return AllTypesInAssemblyOf(typeof(T));
+        }
+
         /// <summary>
         ///     Copy a object to another <typeparamref name="T" />
         /// </summary>
@@ -51,6 +80,47 @@ namespace JKCore.Utilities
 
         /// <summary>
         /// </summary>
+        /// <param name="childType">
+        ///     The child type.
+        /// </param>
+        /// <param name="parentType">
+        ///     The parent type.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static bool IsAssignAbleTo(Type childType, Type parentType)
+        {
+            return parentType.IsAssignableFrom(childType);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="type">
+        ///     The type.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static bool IsClass(Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+            return typeInfo.IsClass;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="type">
+        ///     The type.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static bool IsStaticClass(Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+            return typeInfo.IsSealed && typeInfo.IsAbstract;
+        }
+
+        /// <summary>
+        /// </summary>
         /// <param name="data">
         ///     The data.
         /// </param>
@@ -69,6 +139,16 @@ namespace JKCore.Utilities
             return
                 properties.Select(
                     t => new KeyValuePair<string, string>(t.Name, t.GetGetMethod().Invoke(data, null)?.ToString()));
+        }
+
+        public static Assembly GetAssembly<T>()
+        {
+            return GetAssembly(typeof(T));
+        }
+
+        public static Assembly GetAssembly(Type type)
+        {
+            return type.GetTypeInfo().Assembly;
         }
     }
 }

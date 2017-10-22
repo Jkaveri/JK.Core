@@ -17,7 +17,7 @@ namespace JKCore.Validators.Models
     /// <summary>
     ///     The validation result.
     /// </summary>
-    public class ValidationResult
+    public class ValidationResult : ErroritemContainer
     {
         private bool _isValid;
 
@@ -28,13 +28,7 @@ namespace JKCore.Validators.Models
         public ValidationResult(bool isValid)
         {
             this.IsValid = isValid;
-            this.Errors = new List<ErrorItem>();
         }
-
-        /// <summary>
-        ///     gets errors.
-        /// </summary>
-        public virtual List<ErrorItem> Errors { get; }
 
         /// <summary>
         ///     True if validation result is valid.
@@ -53,67 +47,9 @@ namespace JKCore.Validators.Models
         }
 
         /// <summary>
-        ///     The add error.
-        /// </summary>
-        /// <param name="msg">
-        ///     The error message.
-        /// </param>
-        public void AddError(string msg)
-        {
-            if (string.IsNullOrEmpty(msg))
-            {
-                return;
-            }
-
-            this.Errors.Add(new ErrorItem(msg));
-        }
-
-        /// <summary>
-        ///     Add an error item with an exception.
-        /// </summary>
-        /// <param name="exception"></param>
-        public void AddError(Exception exception)
-        {
-            if (exception == null)
-            {
-                return;
-            }
-
-            this.Errors.Add(new ErrorItem(exception));
-        }
-
-        /// <summary>
-        ///     The add error item with message and exception.
-        /// </summary>
-        /// <param name="msg">
-        ///     The error message.
-        /// </param>
-        /// <param name="ex">
-        ///     The ex.
-        /// </param>
-        public void AddError(string msg, Exception ex)
-        {
-            this.Errors.Add(new ErrorItem(msg, ex));
-        }
-
-        /// <summary>
-        ///     The add errors.
-        /// </summary>
-        /// <param name="errors">
-        ///     The errors.
-        /// </param>
-        public void AddErrors(IEnumerable<ErrorItem> errors)
-        {
-            if (errors != null)
-            {
-                this.Errors.AddRange(errors);
-            }
-        }
-
-        /// <summary>
         ///     Throws the exception if not valid.
-        ///     When  the <see cref="Errors" /> property is not exception. We pick the first on exception object in
-        ///     <see cref="Errors" /> as a inner exception.
+        ///     When  the <see cref="ErroritemContainer.Errors" /> property is not exception. We pick the first on exception object in
+        ///     <see cref="ErroritemContainer.Errors" /> as a inner exception.
         /// </summary>
         /// <exception cref="ValidationException"></exception>
         public void ThrowExceptionIfNotValid()
@@ -134,21 +70,14 @@ namespace JKCore.Validators.Models
         /// <param name="args">The arguments to build exception. <typeparamref name="TException" /></param>
         /// <exception cref="ValidationException">
         /// </exception>
-        public void ThrowExceptionIfNotValid<TException>(params object[] args) where TException : Exception
+        public void ThrowExceptionIfNotValid<TException>() where TException : Exception
         {
             if (this.IsValid)
             {
                 return;
             }
 
-            var msg = this.ToString();
-            if (args != null)
-            {
-                var innerException = (TException)Activator.CreateInstance(typeof(TException), args);
-                throw new ValidationException(msg, innerException);
-            }
-
-            throw new ValidationException(msg, Activator.CreateInstance<TException>());
+            throw  (TException) Activator.CreateInstance(typeof(TException), ToString());
         }
 
         /// <summary>Returns a string that represents the current object.</summary>

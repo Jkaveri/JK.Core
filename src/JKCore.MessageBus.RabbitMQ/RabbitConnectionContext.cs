@@ -18,7 +18,7 @@ namespace JKCore.MessageBus.RabbitMQ
     {
         private IConnection _connection;
 
-        private ConnectionFactory _connectionFactory;
+        private readonly ConnectionFactory _connectionFactory;
 
         private bool _disposed;
 
@@ -52,7 +52,7 @@ namespace JKCore.MessageBus.RabbitMQ
                 return Task.FromResult(this._connection);
             }
 
-            return Task.Run(() => { return this._connection = this._connectionFactory.CreateConnection(); });
+            return Task.Run(() => { return _connection = this._connectionFactory.CreateConnection(); });
         }
 
         private void Dispose(bool disposing)

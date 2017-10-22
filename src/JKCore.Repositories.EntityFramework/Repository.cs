@@ -7,10 +7,11 @@ namespace JKCore.Repositories.EntityFramework
 
     using System;
     using System.Linq;
-
+    using System.Threading.Tasks;
     using JKCore.Repositories;
 
     using Microsoft.EntityFrameworkCore;
+    using System.Threading;
 
     #endregion
 
@@ -32,13 +33,8 @@ namespace JKCore.Repositories.EntityFramework
         /// </exception>
         protected Repository(DbContext dbcontext)
         {
-            if (dbcontext == null)
-            {
-                throw new ArgumentNullException(nameof(dbcontext));
-            }
-
-            this.DbContext = dbcontext;
-            this.DbSet = this.DbContext.Set<TEntity>();
+            this.DbContext = dbcontext ?? throw new ArgumentNullException(nameof(dbcontext));
+            this.DbSet = DbContext.Set<TEntity>();
         }
 
         /// <summary>
@@ -49,48 +45,67 @@ namespace JKCore.Repositories.EntityFramework
         /// <summary>
         /// Gets the db set.
         /// </summary>
-        protected DbSet<TEntity> DbSet { get; private set; }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="entity">
-        /// The entity.
-        /// </param>
-        public void Delete(TEntity entity)
-        {
-            this.DbContext.Entry(entity).State = EntityState.Deleted;
-            this.DbSet.Attach(entity);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="entity">
-        /// The entity.
-        /// </param>
-        public void Insert(TEntity entity)
-        {
-            this.DbContext.Entry(entity).State = EntityState.Added;
-            this.DbSet.Attach(entity);
-        }
+        protected DbSet<TEntity> DbSet { get; private set; }        
 
         /// <summary>
         /// </summary>
         /// <returns>
         /// </returns>
-        public IQueryable<TEntity> Select()
+        public IQueryable<TEntity> GetQueryable()
         {
             return this.DbSet;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="entity">
-        /// The entity.
-        /// </param>
-        public void Update(TEntity entity)
+        public virtual Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
-            this.DbContext.Entry(entity).State = EntityState.Modified;
-            this.DbSet.Attach(entity);
+            var entry = this.DbContext.Entry(entity);
+            if (entry.State != EntityState.Deleted)
+                entry.State = EntityState.Deleted;
+            else
+            {
+                DbSet.Attach(entity);
+                DbSet.Remove(entity);
+            }
+            return Task.CompletedTask;
+        }
+
+        public virtual Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // get tracking entry.
+            var entry = this.DbContext.Entry(entity);
+
+            // check entry state.
+            if (entry.State != EntityState.Detached)
+            {
+                // change state to added.
+                entry.State = EntityState.Added;
+            }
+            else
+            {
+                // add to entities set.
+                DbSet.Add(entity);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public virtual Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var entry = DbContext.Entry(entity);
+
+            switch (entry.State)
+            {
+                case EntityState.Detached:
+                    DbSet.Attach(entity);
+                    break;
+                case EntityState.Unchanged:
+                    entry.State = EntityState.Modified;
+                    break;
+                default:
+                    break;
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

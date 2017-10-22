@@ -1,0 +1,8 @@
+<!-- This file may be overwritten by automation. Only values allowed here are VersionPrefix and VersionSuffix.  -->
+<Project>
+    <PropertyGroup>
+		<Copyright>Copyright (c) Henry. All right reversed</Copyright>
+		<VersionPrefix>1.1.0</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
+    </PropertyGroup>
+</Project>

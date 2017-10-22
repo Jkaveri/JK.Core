@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>JKCore.MessageBus</AssemblyName>
+    <PackageId>JKCore.MessageBus</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\JKCore.licenseheader" Link="JKCore.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

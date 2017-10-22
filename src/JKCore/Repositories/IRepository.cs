@@ -6,6 +6,8 @@ namespace JKCore.Repositories
     #region
 
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     #endregion
 
@@ -17,31 +19,24 @@ namespace JKCore.Repositories
         where T : class
     {
         /// <summary>
+        /// Delete entity.
         /// </summary>
-        /// <param name="entity">
-        ///     The entity.
-        /// </param>
-        void Delete(T entity);
+        Task DeleteAsync(T entity, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Insert entity.
         /// </summary>
-        /// <param name="entity">
-        ///     The entity.
-        /// </param>
-        void Insert(T entity);
+        Task InsertAsync(T entity, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Get IQueryable{T}
         /// </summary>
-        /// <returns>
-        /// </returns>
-        IQueryable<T> Select();
+        IQueryable<T> GetQueryable();
 
         /// <summary>
+        /// Update entity.
         /// </summary>
-        /// <param name="entity">
-        ///     The entity.
-        /// </param>
-        void Update(T entity);
+        Task UpdateAsync(T entity, CancellationToken cancellationToken = default(CancellationToken));
     }
 
     /// <summary>

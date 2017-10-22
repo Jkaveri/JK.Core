@@ -1,170 +1,52 @@
 ﻿// Copyright (c) Ho Nguyen. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+#region
+
+using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
+using JKCore.Mediator.Abstracts;
+using JKCore.Mediator.Internal;
+using JKCore.Utilities;
+
+#endregion
+
 namespace JKCore.Mediator
 {
-    #region
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using JKCore.Mediator.Commands;
-    using JKCore.Mediator.Events;
-
-    #endregion
-
     /// <summary>
     /// </summary>
     public class Mediator : IMediator
     {
-        private readonly ICommandHandlerResolver _handlerResolver;
-
-        private readonly IEventListenerResolver _listenerResolver;
+        private static readonly ConcurrentDictionary<Type, object> _handlers = new ConcurrentDictionary<Type, object>();
+        private readonly FilterManager _filterManager;
+        private readonly IHandlerResolver _handlerResolver;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mediator"/> class.
+        ///     Initializes a new instance of the <see cref="Mediator" /> class.
         /// </summary>
-        /// <param name="handlerResolver">
-        /// The handler resolver.
-        /// </param>
-        /// <param name="listenerResolver">
-        /// The listener resolver.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// </exception>
-        public Mediator(ICommandHandlerResolver handlerResolver, IEventListenerResolver listenerResolver)
+        public Mediator(IHandlerResolver handlerResolver, FilterManager filterManager)
         {
-            if (handlerResolver == null)
-            {
-                throw new ArgumentNullException(nameof(handlerResolver));
-            }
-
-            if (listenerResolver == null)
-            {
-                throw new ArgumentNullException(nameof(listenerResolver));
-            }
-
-            this._handlerResolver = handlerResolver;
-            this._listenerResolver = listenerResolver;
+            _filterManager = filterManager ?? throw new ArgumentNullException(nameof(filterManager));
+            _handlerResolver = handlerResolver ?? throw new ArgumentNullException(nameof(handlerResolver));
         }
 
         /// <summary>
+        ///     Send command async.
         /// </summary>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        public FluentAsyncCommandSender<TCommand, TResult> PrepareAsyncCommandSender<TCommand, TResult>()
-            where TCommand : IAsyncCommand<TResult>
+        public Task<IMediatorResult<TResult>> Send<TResult>(IMessage<TResult> message,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new FluentAsyncCommandSender<TCommand, TResult>(this);
-        }
+            Check.ArgNotNull(message, nameof(message));
 
-        /// <summary>
-        /// </summary>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        public FluentCommandSender<TCommand, TResult> PrepareCommandSender<TCommand, TResult>()
-            where TCommand : ICommand<TResult>
-        {
-            return new FluentCommandSender<TCommand, TResult>(this);
-        }
+            var msgType = message.GetType();
+            var implement =
+                (MediatorHandlerImpl<TResult>) _handlers.GetOrAdd(msgType,
+                    (key) => Activator.CreateInstance(
+                        typeof(MediatorHandlerImpl<,>).MakeGenericType(key, typeof(TResult))));
 
-        /// <summary>
-        /// </summary>
-        /// <param name="message">
-        /// The message.
-        /// </param>
-        /// <typeparam name="TMessage">
-        /// </typeparam>
-        public void Publish<TMessage>(TMessage message) where TMessage : IEvent
-        {
-            var receivers = this._listenerResolver.ResolveListeners<TMessage>();
-
-            if (receivers.Any())
-            {
-                foreach (var receiver in receivers)
-                {
-                    receiver.Handle(message);
-                }
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="message">
-        /// The message.
-        /// </param>
-        /// <typeparam name="TMessage">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        public Task PublishAsync<TMessage>(TMessage message) where TMessage : IAsyncEvent
-        {
-            var receivers = this._listenerResolver.ResolveAsyncListeners<TMessage>();
-            var asyncEventListeners = receivers as IList<IAsyncEventListener<TMessage>> ?? receivers.ToList();
-            if (asyncEventListeners.Any())
-            {
-                return Task.WhenAll(asyncEventListeners.Select(t => t.Handle(message)));
-            }
-
-            return Task.Delay(0);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="command">
-        /// The command.
-        /// </param>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// </exception>
-        public TResult Send<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult>
-        {
-            var handler = this._handlerResolver.ResolveHandler<TCommand, TResult>();
-            if (handler != null)
-            {
-                return handler.Handle(command);
-            }
-
-            throw new InvalidOperationException("Handler not found");
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="command">
-        /// The command.
-        /// </param>
-        /// <typeparam name="TCommand">
-        /// </typeparam>
-        /// <typeparam name="TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// </exception>
-        public Task<TResult> SendAsync<TCommand, TResult>(TCommand command) where TCommand : IAsyncCommand<TResult>
-        {
-            var handler = this._handlerResolver.ResolveAsyncHandler<TCommand, TResult>();
-            if (handler != null)
-            {
-                return handler.Handle(command);
-            }
-
-            throw new InvalidOperationException("Handler not found");
+            return implement.Handle(message, _handlerResolver, _filterManager, cancellationToken);
         }
     }
 }

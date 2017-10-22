@@ -8,6 +8,7 @@
 *.sln.docstates
 tools/Cake/
 tools/packages.config.md5sum
+.build/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

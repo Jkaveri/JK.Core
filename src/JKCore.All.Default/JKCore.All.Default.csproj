@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>JKCore.All.Default</AssemblyName>
+    <PackageId>JKCore.All.Default</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JKCore\JKCore.csproj" />
+    <ProjectReference Include="..\JKCore.Mediator\JKCore.Mediator.csproj" />
+    <ProjectReference Include="..\JKCore.Repositories.EntityFramework\JKCore.Repositories.EntityFramework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

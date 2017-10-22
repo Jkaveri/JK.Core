@@ -8,6 +8,8 @@ namespace JKCore.Utilities
     using System;
     using System.Collections;
 
+    using JKCore.Exceptions;
+
     #endregion
 
     /// <summary>
@@ -17,10 +19,10 @@ namespace JKCore.Utilities
         /// <summary>
         /// </summary>
         /// <param name="arg">
-        ///     The arg.
+        ///     The argument.
         /// </param>
         /// <param name="argName">
-        ///     The arg name.
+        ///     The argument name.
         /// </param>
         /// <exception cref="ArgumentException">
         /// </exception>
@@ -28,17 +30,17 @@ namespace JKCore.Utilities
         {
             if (IsEmpty(arg))
             {
-                throw new ArgumentException($"{argName} should not empty.");
+                throw new ArgumentInvalidException(argName, InvalidReason.Empty);
             }
         }
 
         /// <summary>
         /// </summary>
         /// <param name="arg">
-        ///     The arg.
+        ///     The argument.
         /// </param>
         /// <param name="argName">
-        ///     The arg name.
+        ///     The argument name.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -46,17 +48,17 @@ namespace JKCore.Utilities
         {
             if (arg == null)
             {
-                throw new ArgumentNullException(argName);
+                throw new ArgumentInvalidException(argName, InvalidReason.Null);
             }
         }
 
         /// <summary>
         /// </summary>
         /// <param name="arg">
-        ///     The arg.
+        ///     The argument.
         /// </param>
         /// <param name="argName">
-        ///     The arg name.
+        ///     The argument name.
         /// </param>
         public static void ArgNotNullOrEmpty(object arg, string argName)
         {
@@ -73,18 +75,17 @@ namespace JKCore.Utilities
         /// </returns>
         public static bool IsEmpty(object value)
         {
-            if (value is string)
+            var s = value as string;
+            if (s?.Length == 0)
             {
-                if (((string)value).Length == 0) return true;
+                return true;
             }
 
-            if (value is ICollection)
+            var collection = value as ICollection;
+            var col = collection;
+            if (col?.Count == 0)
             {
-                var col = (ICollection)value;
-                if (col.Count == 0)
-                {
-                    return true;
-                }
+                return true;
             }
 
             return false;

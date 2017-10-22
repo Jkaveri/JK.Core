@@ -39,8 +39,7 @@ namespace JKCore.Validators
                         validationResult =>
                             new ErrorItem(
                                 string.Format(validationResult.ErrorMessage, validationResult.MemberNames.First())));
-                this.ValidationResult.Errors.AddRange(failMessages);
-                return this.InValid();
+                return this.InValid(failMessages);
             }
 
             return this.Valid();

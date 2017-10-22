@@ -21,21 +21,8 @@ namespace JKCore.Repositories
         where TEntity : class, IEntity<TKey>
     {
         /// <summary>
+        /// Find entity by id.
         /// </summary>
-        /// <param name="id">
-        ///     The id.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        TEntity GetById(TKey id);
-
-        /// <summary>
-        /// </summary>
-        /// <param name="id">
-        ///     The id.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        Task<TEntity> GetByIdAsync(TKey id);
+        Task<TEntity> FindByIdAsync(TKey id);
     }
 }

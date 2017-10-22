@@ -6,7 +6,9 @@ namespace JKCore.Validators
     #region
 
     using System;
+    using System.Collections.Generic;
 
+    using JKCore.Models;
     using JKCore.Validators.Models;
 
     #endregion
@@ -20,11 +22,6 @@ namespace JKCore.Validators
     public abstract class ValidatorBase<T> : ValidatorBase
     {
         /// <summary>
-        ///     Gets or sets the task result.
-        /// </summary>
-        public ValidationResult ValidationResult { get; set; }
-
-        /// <summary>
         ///     The validate.
         /// </summary>
         /// <param name="input">
@@ -35,7 +32,6 @@ namespace JKCore.Validators
         /// </returns>
         public virtual ValidationResult Validate(T input)
         {
-            this.ValidationResult = new ValidationResult(false);
             return this.Validating(input);
         }
 
@@ -48,8 +44,6 @@ namespace JKCore.Validators
         /// </returns>
         protected virtual ValidationResult InValid(Exception exception)
         {
-            this.ValidationResult.IsValid = false;
-
             return this.InValid(null, exception);
         }
 
@@ -73,16 +67,32 @@ namespace JKCore.Validators
         /// <param name="message">
         ///     The message.
         /// </param>
-        /// <param name="ex">
-        ///     The ex.
+        /// <param name="exception">
+        ///     The exception.
         /// </param>
         /// <returns>
         ///     The <see cref="Models.ValidationResult" />.
         /// </returns>
-        protected virtual ValidationResult InValid(string message, Exception ex)
+        protected virtual ValidationResult InValid(string message, Exception exception)
         {
-            this.ValidationResult.AddError(message, ex);
-            return this.InValid();
+            var result = this.InValid();
+
+            result.AddError(message, exception);
+            return result;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="errors">
+        /// The errors.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        protected virtual ValidationResult InValid(IEnumerable<ErrorItem> errors)
+        {
+            var result = this.InValid();
+            result.AddErrors(errors);
+            return result;
         }
 
         /// <summary>
@@ -93,8 +103,7 @@ namespace JKCore.Validators
         /// </returns>
         protected virtual ValidationResult InValid()
         {
-            this.ValidationResult.IsValid = false;
-            return this.ValidationResult;
+            return new ValidationResult(false);
         }
 
         /// <summary>
@@ -105,9 +114,7 @@ namespace JKCore.Validators
         /// </returns>
         protected virtual ValidationResult Valid()
         {
-            this.ValidationResult.IsValid = true;
-            this.ValidationResult.Errors.Clear();
-            return this.ValidationResult;
+            return new ValidationResult(true);
         }
 
         /// <summary>

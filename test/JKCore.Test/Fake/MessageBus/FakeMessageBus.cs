@@ -18,6 +18,11 @@ namespace JKCore.Test.Fake.MessageBus
             return Task.Delay(0);
         }
 
+        public Task Publish<T>(T msg)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Subscribe(string key, Action<object> handler)
         {
             

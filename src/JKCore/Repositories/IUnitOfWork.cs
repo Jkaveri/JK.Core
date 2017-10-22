@@ -16,13 +16,13 @@ namespace JKCore.Repositories
     public interface IUnitOfWork
     {
         /// <summary>
-        ///     Save all changes
-        /// </summary>
-        void SaveChanges();
-
-        /// <summary>
         ///     Save all changes async.
         /// </summary>
-        Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task CommitAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Rollback changes.
+        /// </summary>
+        Task RollbackAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }
