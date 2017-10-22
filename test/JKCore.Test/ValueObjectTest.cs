@@ -5,14 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Extensions;
 
 namespace JKCore.Test
 {
     public class ValueObjectTest
     {
-        [Theory()]
-        [InlineData("string", 1, "2017-05-01", false)]
-        [InlineData("", 0, null, true)]
+        [Theory(), MemberData(nameof(Values1))]
         public void equals_should_return_true(string str, int number, DateTime datetime, bool boolean)
         {
             // arrange
@@ -41,8 +40,7 @@ namespace JKCore.Test
             result2.Should().BeTrue();
         }
 
-        [Theory()]
-        [InlineData("string", 1, "2017-05-01", false)]
+        [Theory(), MemberData(nameof(Values1))]
         public void equals_operator_should_return_true(string str, int number, DateTime datetime, bool boolean)
         {
             // arrange
@@ -72,8 +70,7 @@ namespace JKCore.Test
         }
 
 
-        [Theory()]
-        [InlineData("string", 1, "2017-05-01", false)]
+        [Theory(), MemberData(nameof(Values1))]
         public void GetHashCode_should_return_same(string str, int number, DateTime datetime, bool boolean)
         {
             // arrange
@@ -101,6 +98,18 @@ namespace JKCore.Test
             hash1.Should().Be(hash2);
         }
 
+
+        public static IEnumerable<object[]> Values1 => new List<object[]>
+        {
+            new object[]
+            {
+                "string", 1, new DateTime(2017,5,1), false
+            },
+            new object[]
+            {
+                "", 0, DateTime.MinValue, true
+            }
+        };
 
 
     }
