@@ -1,0 +1,22 @@
+version: 1.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+image: Visual Studio 2017 Preview
+configuration: Release
+platform: Any CPU
+clone_depth: 1
+build_script:
+- ps: >-
+    dotnet restore ./JKCore.sln
+
+    dotnet build ./JKCore.sln
+
+    dotnet pack ./JKCore.sln --output ./artifacts
+test_script:
+- ps: >-
+    dotnet test ./test/JKCore.Test
+    dotnet test ./test/JKCore.Mediator.Test
+artifacts:
+- path: '**/src/**/artifacts/*.nupkg'
+  name: Nuget
+deploy: off
