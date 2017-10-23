@@ -15,6 +15,7 @@ build_script:
 test_script:
 - ps: >-
     dotnet test ./test/JKCore.Test
+
     dotnet test ./test/JKCore.Mediator.Test
 artifacts:
 - path: '**/src/**/artifacts/*.nupkg'
