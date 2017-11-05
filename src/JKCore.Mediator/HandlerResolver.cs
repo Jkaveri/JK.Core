@@ -20,7 +20,7 @@ namespace JKCore.Mediator
     /// </summary>
     public class HandlerResolver : IHandlerResolver
     {
-        private readonly ConcurrentDictionary<Type, Type> _cached = new ConcurrentDictionary<Type, Type>();
+        private static readonly ConcurrentDictionary<Type, Type> Cached = new ConcurrentDictionary<Type, Type>();
 
         /// <summary>
         ///     The _container.
@@ -57,7 +57,7 @@ namespace JKCore.Mediator
         {
             Type type;
 
-            if (_cached.TryGetValue(messageType, out type) == false)
+            if (Cached.TryGetValue(messageType, out type) == false)
             {
                 type = BuildHandlerType(messageType);
             }

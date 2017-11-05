@@ -19,7 +19,7 @@ namespace JKCore.Mediator
     /// </summary>
     public class Mediator : IMediator
     {
-        private static readonly ConcurrentDictionary<Type, object> _handlers = new ConcurrentDictionary<Type, object>();
+        private static readonly ConcurrentDictionary<Type, object> Handlers = new ConcurrentDictionary<Type, object>();
         private readonly FilterManager _filterManager;
         private readonly IHandlerResolver _handlerResolver;
 
@@ -42,7 +42,7 @@ namespace JKCore.Mediator
 
             var msgType = message.GetType();
             var implement =
-                (MediatorHandlerImpl<TResult>) _handlers.GetOrAdd(msgType,
+                (MediatorHandlerImpl<TResult>) Handlers.GetOrAdd(msgType,
                     (key) => Activator.CreateInstance(
                         typeof(MediatorHandlerImpl<,>).MakeGenericType(key, typeof(TResult))));
 

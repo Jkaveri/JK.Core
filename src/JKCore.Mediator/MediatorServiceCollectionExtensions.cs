@@ -22,9 +22,9 @@ namespace JKCore.Mediator
         /// </summary>
         public static MediatorServicesBuilder AddMediator(this IServiceCollection services)
         {
-            services.AddSingleton<IMediator, Mediator>();
-            services.AddSingleton<IHandlerResolver>((sp) => new HandlerResolver(sp));
-            services.AddSingleton<FilterManager>();
+            services.AddTransient<IMediator, Mediator>();
+            services.AddTransient<IHandlerResolver>((sp) => new HandlerResolver(sp));
+            services.AddTransient<FilterManager>();
             return new MediatorServicesBuilder(services);
         }
     }
