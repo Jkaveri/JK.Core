@@ -17,13 +17,15 @@ namespace JKCore.Mediator.Test.Shared
         public MediatorFixture()
         {
             _services = new ServiceCollection();
-
+            _services.AddScoped<ScopedService>();
             _services.AddMediator()
                 .AddHandlersSameAssemblyWith<ExpectedHandler>();
+
 
             _serviceProvider = _services.BuildServiceProvider();
         }
 
         public IMediator Mediator => _serviceProvider.GetService<IMediator>();
+        public IServiceProvider ServiceProvider => _serviceProvider;
     }
 }

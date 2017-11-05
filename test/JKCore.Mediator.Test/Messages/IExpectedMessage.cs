@@ -12,7 +12,7 @@ namespace JKCore.Mediator.Test.Messages
         object Expected { get; }
     }
 
-    public class ExpectedMessage : IExpectedMessage
+    public class ExpectedMessage : IExpectedMessage, IMessage
     {
         public object Expected { get; set; }
     }
