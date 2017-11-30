@@ -17,7 +17,7 @@ namespace JKCore.Modeling
         /// <summary>
         ///     Gets or sets CreatedDate
         /// </summary>
-        DateTimeOffset CreatedDate { get; set; }
+        DateTimeOffset? CreatedDate { get; set; }
 
         /// <summary>
         ///     Gets or sets Id
@@ -27,7 +27,7 @@ namespace JKCore.Modeling
         /// <summary>
         ///     Gets or sets UpdatedDate
         /// </summary>
-        DateTimeOffset UpdatedDate { get; set; }
+        DateTimeOffset? UpdatedDate { get; set; }
 
         /// <summary>
         ///     override object.Equals method

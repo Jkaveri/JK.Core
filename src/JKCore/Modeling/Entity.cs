@@ -51,17 +51,17 @@ namespace JKCore.Modeling
         /// <summary>
         ///     Gets or sets CreatedDate.
         /// </summary>
-        public DateTimeOffset CreatedDate { get; set; }
+        public virtual DateTimeOffset? CreatedDate { get; set; }
 
         /// <summary>
         ///     Gets or sets Identity
         /// </summary>
-        public TKey Id { get; set; }
+        public virtual TKey Id { get; set; }
 
         /// <summary>
         ///     Gets or sets UpdatedDate.
         /// </summary>
-        public DateTimeOffset UpdatedDate { get; set; }
+        public virtual DateTimeOffset? UpdatedDate { get; set; }
 
         /// <summary>Returns a value that indicates whether the values of two <see cref="T:JK.Core.Entity`1" /> objects are equal.</summary>
         /// <param name="left">The first value to compare.</param>
@@ -87,7 +87,7 @@ namespace JKCore.Modeling
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         /// <param name="other">An object to compare with this object.</param>
-        public bool Equals(IEntity<TKey> other)
+        public virtual bool Equals(IEntity<TKey> other)
         {
             if (other == null)
             {
