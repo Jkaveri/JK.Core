@@ -15,19 +15,9 @@ namespace JKCore.Modeling
     public interface IEntity<TKey> : IEntity, IEquatable<IEntity<TKey>>
     {
         /// <summary>
-        ///     Gets or sets CreatedDate
-        /// </summary>
-        DateTimeOffset? CreatedDate { get; set; }
-
-        /// <summary>
         ///     Gets or sets Id
         /// </summary>
         TKey Id { get; set; }
-
-        /// <summary>
-        ///     Gets or sets UpdatedDate
-        /// </summary>
-        DateTimeOffset? UpdatedDate { get; set; }
 
         /// <summary>
         ///     override object.Equals method

@@ -49,19 +49,9 @@ namespace JKCore.Modeling
         }
 
         /// <summary>
-        ///     Gets or sets CreatedDate.
-        /// </summary>
-        public virtual DateTimeOffset? CreatedDate { get; set; }
-
-        /// <summary>
         ///     Gets or sets Identity
         /// </summary>
         public virtual TKey Id { get; set; }
-
-        /// <summary>
-        ///     Gets or sets UpdatedDate.
-        /// </summary>
-        public virtual DateTimeOffset? UpdatedDate { get; set; }
 
         /// <summary>Returns a value that indicates whether the values of two <see cref="T:JK.Core.Entity`1" /> objects are equal.</summary>
         /// <param name="left">The first value to compare.</param>

@@ -51,8 +51,6 @@
 
             // Assertion
             entity.Id.Should().BeNullOrEmpty();
-            entity.CreatedDate.Should().BeNull();
-            entity.UpdatedDate.Should().BeNull();
         }
 
         [Fact]
@@ -66,8 +64,6 @@
 
             // Assertion
             entity.Id.Should().Be(default(string));
-            entity.CreatedDate.Should().BeNull();
-            entity.UpdatedDate.Should().BeNull();
         }
     }
 }
