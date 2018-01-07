@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+  <PropertyGroup>
+    <AssemblyTitle>JKCore.Extensions.AspNet</AssemblyTitle>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>JKCore.Extensions.AspNet</AssemblyName>
+    <PackageId>JKCore.Extensions.AspNet</PackageId>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\JKCore.licenseheader" Link="JKCore.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JKCore.Mediator\JKCore.Mediator.csproj" />
+    <ProjectReference Include="..\JKCore\JKCore.csproj" />
+  </ItemGroup>
+
+</Project>
